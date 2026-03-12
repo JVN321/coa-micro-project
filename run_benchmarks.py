@@ -52,11 +52,8 @@ RIPES_BASE_ARGS = [
 ]
 
 # ── Paths (all relative to the project root) ─────────────────────────────────
-ROOT          = Path(__file__).resolve().parent
-TESTS_DIR     = ROOT / "tests"
-REORDERED_DIR = ROOT / "reordered_tests"
-RESULTS_DIR   = ROOT / "results"
-CSV_PATH      = RESULTS_DIR / "benchmark_summary.csv"
+ROOT = Path(__file__).resolve().parent
+# Default directories – overridden by CLI args when called from run.py
 # ─────────────────────────────────────────────────────────────────────────────
 
 
@@ -185,12 +182,18 @@ def _row(cells: list) -> str:
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def main() -> None:
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+def main(tests_dir: Path = None, reordered_dir: Path = None,
+         results_dir: Path = None) -> None:
 
-    asm_files = sorted(TESTS_DIR.glob("*.s"))
+    tests_dir     = tests_dir     or (ROOT / "tests")
+    reordered_dir = reordered_dir or (ROOT / "reordered_tests")
+    results_dir   = results_dir   or (ROOT / "results")
+
+    results_dir.mkdir(parents=True, exist_ok=True)
+
+    asm_files = sorted(tests_dir.glob("*.s"))
     if not asm_files:
-        print(f"[warn] No .s files found in {TESTS_DIR.relative_to(ROOT)}/")
+        print(f"[warn] No .s files found in {tests_dir}/")
         return
 
     rows: list[dict] = []
@@ -202,14 +205,14 @@ def main() -> None:
         print(f"  Program : {stem}")
 
         # --- original ---
-        orig_json = RESULTS_DIR / f"{stem}_original.json"
+        orig_json = results_dir / f"{stem}_original.json"
         print(f"  [1/2] Running original  …", end=" ", flush=True)
         ok_orig = run_ripes(src, orig_json)
         print("done" if ok_orig else "FAILED")
 
         # --- reordered ---
-        reordered_src  = REORDERED_DIR / f"{stem}_reordered.s"
-        reordered_json = RESULTS_DIR   / f"{stem}_reordered.json"
+        reordered_src  = reordered_dir / f"{stem}_reordered.s"
+        reordered_json = results_dir   / f"{stem}_reordered.json"
 
         if not reordered_src.exists():
             print(f"  [warn] Reordered file not found ({reordered_src.name}).")
@@ -253,10 +256,13 @@ def main() -> None:
 
     if not rows:
         print("\n[info] No comparable results — nothing to report.")
-        return
-
-
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tests-dir",     type=Path, default=None)
+    parser.add_argument("--reordered-dir", type=Path, default=None)
+    parser.add_argument("--results-dir",   type=Path, default=None)
+    args = parser.parse_args()
+    main(args.tests_dir, args.reordered_dir, args.results_dir)

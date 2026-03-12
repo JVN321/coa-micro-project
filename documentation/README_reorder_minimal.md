@@ -84,6 +84,7 @@ Instructions are never moved across these boundaries, preserving correctness of 
 ## Usage
 
 ```bash
+# Single file
 python riscv_reorder_minimal.py input.s output.s
 ```
 
@@ -93,6 +94,16 @@ python riscv_reorder_minimal.py input.s output.s
 | `output` | Destination file for the reordered assembly |
 
 The output file contains the **original text lines** re-emitted in the new order — no synthetic instructions are added or removed.
+
+For batch reordering a directory of files use `reorder_all.py`:
+
+```bash
+# Default: reads tests/, writes reordered_tests/
+python reorder_all.py
+
+# Custom directories
+python reorder_all.py --tests-dir "my_folder/test scripts" --reordered-dir "my_folder/reordered_tests"
+```
 
 ---
 

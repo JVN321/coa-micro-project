@@ -21,9 +21,8 @@ from pathlib import Path
 from typing import Optional
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT        = Path(__file__).resolve().parent
-RESULTS_DIR = ROOT / "results"
-CSV_PATH    = RESULTS_DIR / "analysis.csv"
+ROOT = Path(__file__).resolve().parent
+# Default results dir – overridden by CLI arg when called from run.py
 
 # A 5-stage in-order pipeline needs (stages - 1) = 4 fill/drain cycles
 # with zero stalls.  Everything above that is a stall or flush cycle.
@@ -95,12 +94,12 @@ def extract_metrics(data: dict) -> dict:
 
 # ── Pairing helper ────────────────────────────────────────────────────────────
 
-def collect_pairs() -> list[dict]:
+def collect_pairs(results_dir: Path) -> list[dict]:
     """Return one record per program containing both original and reordered metrics."""
     originals = {p.stem.removesuffix("_original"): p
-                 for p in RESULTS_DIR.glob("*_original.json")}
+                 for p in results_dir.glob("*_original.json")}
     reordered = {p.stem.removesuffix("_reordered"): p
-                 for p in RESULTS_DIR.glob("*_reordered.json")}
+                 for p in results_dir.glob("*_reordered.json")}
 
     programs = sorted(originals.keys() & reordered.keys())
 
@@ -258,37 +257,46 @@ def _round(val, ndigits=6):
     return val
 
 
-def write_csv(pairs: list[dict]) -> None:
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+def write_csv(pairs: list[dict], results_dir: Path, csv_path: Path) -> None:
+    results_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(CSV_PATH, "w", newline="", encoding="utf-8") as fh:
+    with open(csv_path, "w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=_CSV_FIELDS, extrasaction="ignore")
         writer.writeheader()
         for p in pairs:
             writer.writerow({k: _round(p.get(k)) for k in _CSV_FIELDS})
 
-    print(f"  Analysis CSV written to: {CSV_PATH.relative_to(ROOT)}")
+    print(f"  Analysis CSV written to: {csv_path}")
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
-def main() -> None:
-    if not RESULTS_DIR.exists():
+def main(results_dir: Path = None) -> None:
+    results_dir = results_dir or (ROOT / "results")
+    csv_path    = results_dir / "analysis.csv"
+
+    if not results_dir.exists():
         print("[error] results/ directory not found.")
         print("        Run  python run_benchmarks.py  first to generate JSON outputs.")
         return
 
-    json_count = len(list(RESULTS_DIR.glob("*.json")))
-    print(f"Found {json_count} JSON file(s) in {RESULTS_DIR.relative_to(ROOT)}/")
+    json_count = len(list(results_dir.glob("*.json")))
+    print(f"Found {json_count} JSON file(s) in {results_dir}/")
 
-    pairs = collect_pairs()
+    pairs = collect_pairs(results_dir)
     if not pairs:
         print("[error] No matching original/reordered JSON pairs found.")
         return
 
     print_analysis(pairs)
-    write_csv(pairs)
+    write_csv(pairs, results_dir, csv_path)
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tests-dir",     type=Path, default=None)  # accepted but unused
+    parser.add_argument("--reordered-dir", type=Path, default=None)  # accepted but unused
+    parser.add_argument("--results-dir",   type=Path, default=None)
+    args = parser.parse_args()
+    main(args.results_dir)

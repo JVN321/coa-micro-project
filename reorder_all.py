@@ -22,27 +22,27 @@ if str(ROOT) not in sys.path:
 
 from riscv_reorder_minimal import optimize_assembly_text  # noqa: E402
 
-# ── Paths (all relative to the project root) ─────────────────────────────────
-TESTS_DIR     = ROOT / "tests"
-REORDERED_DIR = ROOT / "reordered_tests"
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def main() -> None:
-    REORDERED_DIR.mkdir(parents=True, exist_ok=True)
+def main(tests_dir: Path = None, reordered_dir: Path = None) -> None:
+    tests_dir     = tests_dir     or (ROOT / "tests")
+    reordered_dir = reordered_dir or (ROOT / "reordered_tests")
 
-    asm_files = sorted(TESTS_DIR.glob("*.s"))
+    reordered_dir.mkdir(parents=True, exist_ok=True)
+
+    asm_files = sorted(tests_dir.glob("*.s"))
     if not asm_files:
-        print(f"[warn] No .s files found in {TESTS_DIR}")
+        print(f"[warn] No .s files found in {tests_dir}")
         return
 
     passed = 0
     failed = 0
 
-    print(f"Found {len(asm_files)} assembly file(s) in {TESTS_DIR.relative_to(ROOT)}/\n")
+    print(f"Found {len(asm_files)} assembly file(s) in {tests_dir}\n")
 
     for src in asm_files:
-        out = REORDERED_DIR / f"{src.stem}_reordered.s"
+        out = reordered_dir / f"{src.stem}_reordered.s"
         print(f"  {src.name:<30}  ->  {out.name}", end="  ", flush=True)
 
         try:
@@ -57,8 +57,14 @@ def main() -> None:
             failed += 1
 
     print(f"\nDone — {passed} succeeded, {failed} failed.")
-    print(f"Reordered files saved to: {REORDERED_DIR.relative_to(ROOT)}/")
+    print(f"Reordered files saved to: {reordered_dir}/")
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tests-dir",     type=Path, default=None)
+    parser.add_argument("--reordered-dir", type=Path, default=None)
+    parser.add_argument("--results-dir",   type=Path, default=None)  # accepted but unused
+    args = parser.parse_args()
+    main(args.tests_dir, args.reordered_dir)

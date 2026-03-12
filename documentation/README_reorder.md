@@ -9,7 +9,19 @@ Reduce avoidable pipeline stalls (especially load-use hazards) while preserving 
 ## Usage
 
 ```bash
+# Single file
 python riscv_reorder.py input.s output.s
+```
+
+For batch reordering a directory of files use `reorder_all.py` (which calls
+`riscv_reorder_minimal.py` internally):
+
+```bash
+# Default: reads tests/, writes reordered_tests/
+python reorder_all.py
+
+# Custom directories
+python reorder_all.py --tests-dir "my_folder/test scripts" --reordered-dir "my_folder/reordered_tests"
 ```
 
 ## High-Level Algorithm
