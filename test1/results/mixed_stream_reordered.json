@@ -1,0 +1,49 @@
+
+Program exited with code: 0
+{
+    "# instructions retired": 32,
+    "CPI": 1.1875,
+    "IPC": 0.8421052631578947,
+    "cycles": 38,
+    "pipeline": "\t0\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\t16\t17\t18\t19\t20\t21\t22\t23\t24\t25\t26\t27\t28\t29\t30\t31\t32\t33\t34\t35\t36\t37\t38\t\naddi x5 x0 10\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x6 x0 20\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x7 x0 30\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nadd x8 x5 x6\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x9 x0 40\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nsub x10 x8 x7\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x2 x2 -16\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x5 x0 100\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nsw x5 0 x2\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x5 x0 200\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nsw x5 4 x2\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x5 x0 300\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nsw x5 8 x2\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nlw x11 0 x2\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x12 x0 50\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nadd x13 x11 x10\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nlw x14 4 x2\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x15 x0 60\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nsub x16 x14 x13\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nlw x17 8 x2\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x18 x0 70\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\nadd x19 x17 x16\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\t\naddi x22 x0 80\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\t\nadd x20 x19 x12\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\t\naddi x23 x0 90\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\t\nadd x21 x20 x15\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\t\nsub x26 x25 x23\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\t\nsub x24 x21 x18\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\t\naddi x2 x2 16\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\t\nadd x25 x24 x22\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\t\naddi x17 x0 10\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\tMEM\tWB\t\t\t\t\t\necall\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tIF\tID\tEX\t-\t-\tMEM\tWB\t\t\n",
+    "registers": {
+        "x0": 0,
+        "x1": 0,
+        "x10": 0,
+        "x11": 100,
+        "x12": 50,
+        "x13": 100,
+        "x14": 200,
+        "x15": 60,
+        "x16": 100,
+        "x17": 10,
+        "x18": 70,
+        "x19": 400,
+        "x2": 0,
+        "x20": 450,
+        "x21": 510,
+        "x22": 80,
+        "x23": 90,
+        "x24": 440,
+        "x25": 520,
+        "x26": 4294967206,
+        "x27": 0,
+        "x28": 0,
+        "x29": 0,
+        "x3": 0,
+        "x30": 0,
+        "x31": 0,
+        "x4": 0,
+        "x5": 300,
+        "x6": 20,
+        "x7": 30,
+        "x8": 30,
+        "x9": 40
+    },
+    "runinfo": {
+        "ISA extensions": [
+        ],
+        "processor": "RV32_5S",
+        "source file": "E:\\GitHub\\coa-micro-project\\test1\\reordered_tests\\mixed_stream_reordered.s"
+    }
+}

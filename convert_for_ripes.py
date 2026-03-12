@@ -77,6 +77,7 @@ _start:
 \tcall\tmain
 \tli\ta7, 10\t\t# Ripes exit ecall (terminate simulation)
 \tecall
+
 """
 
 
@@ -142,9 +143,9 @@ def main() -> None:
         help="Output path (default: <input>_ripes.s next to input file)",
     )
     parser.add_argument(
-        "--start-stub",
+        "--no-start-stub",
         action="store_true",
-        help="Prepend a _start label so Ripes uses _start as the entry point",
+        help="Do NOT prepend a _start label (by default one is always added for Ripes)",
     )
     args = parser.parse_args()
 
@@ -158,7 +159,7 @@ def main() -> None:
     else:
         output_path = input_path.with_name(input_path.stem + "_ripes.s")
 
-    convert(input_path, output_path, add_start_stub=args.start_stub)
+    convert(input_path, output_path, add_start_stub=not args.no_start_stub)
 
 
 if __name__ == "__main__":

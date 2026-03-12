@@ -1,4 +1,10 @@
 	.text
+	.globl	_start
+_start:
+	call	main
+	li	a7, 10
+	ecall
+	.text
 	.globl	A
 	.bss
 	.align	2

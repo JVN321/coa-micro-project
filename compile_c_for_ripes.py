@@ -79,8 +79,8 @@ def compile_c(gcc: str, c_file: Path, s_file: Path) -> bool:
 def convert(convert_script: Path, s_file: Path, out_file: Path, start_stub: bool) -> bool:
     """Run convert_for_ripes.py.  Returns True on success."""
     cmd = [sys.executable, str(convert_script), str(s_file), str(out_file)]
-    if start_stub:
-        cmd.append("--start-stub")
+    if not start_stub:
+        cmd.append("--no-start-stub")
     print(f"  [convert] {' '.join(cmd)}")
     result = subprocess.run(cmd)
     if result.returncode != 0:
@@ -95,9 +95,9 @@ def main() -> None:
     )
     parser.add_argument("folder", help="Test folder (e.g. test2). Must contain a programs/ sub-folder.")
     parser.add_argument(
-        "--start-stub",
+        "--no-start-stub",
         action="store_true",
-        help="Add a _start entry-point stub (calls main then ecall exit). Recommended for Ripes.",
+        help="Do NOT add a _start entry-point stub (the stub is added by default).",
     )
     parser.add_argument(
         "--gcc",
@@ -153,7 +153,7 @@ def main() -> None:
 
         # Step 2: convert → Ripes-compatible assembly (written to programs/ then moved)
         ripes_s_file = programs_dir / (c_file.stem + "_ripes.s")
-        if not convert(convert_script, s_file, ripes_s_file, start_stub=args.start_stub):
+        if not convert(convert_script, s_file, ripes_s_file, start_stub=not args.no_start_stub):
             fail_count += 1
             print()
             continue

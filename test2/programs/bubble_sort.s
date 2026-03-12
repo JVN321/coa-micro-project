@@ -4,176 +4,95 @@
 	.attribute unaligned_access, 0
 	.attribute stack_align, 16
 	.text
-	.globl	A
+	.globl	arr
 	.bss
 	.align	2
-	.type	A, @object
-	.size	A, 36
-A:
-	.zero	36
-	.globl	B
-	.align	2
-	.type	B, @object
-	.size	B, 36
-B:
-	.zero	36
-	.globl	C
-	.align	2
-	.type	C, @object
-	.size	C, 36
-C:
-	.zero	36
+	.type	arr, @object
+	.size	arr, 400
+arr:
+	.zero	400
 	.text
 	.align	2
-	.globl	init
-	.type	init, @function
-init:
-	addi	sp,sp,-32
-	sw	s0,28(sp)
-	addi	s0,sp,32
+	.globl	bubble_sort
+	.type	bubble_sort, @function
+bubble_sort:
+	addi	sp,sp,-48
+	sw	s0,44(sp)
+	addi	s0,sp,48
+	sw	a0,-36(s0)
 	sw	zero,-20(s0)
 	j	.L2
-.L5:
+.L6:
 	sw	zero,-24(s0)
 	j	.L3
+.L5:
+	lui	a5,%hi(arr)
+	addi	a4,a5,%lo(arr)
+	lw	a5,-24(s0)
+	slli	a5,a5,2
+	add	a5,a4,a5
+	lw	a4,0(a5)
+	lw	a5,-24(s0)
+	addi	a5,a5,1
+	lui	a3,%hi(arr)
+	addi	a3,a3,%lo(arr)
+	slli	a5,a5,2
+	add	a5,a3,a5
+	lw	a5,0(a5)
+	ble	a4,a5,.L4
+	lui	a5,%hi(arr)
+	addi	a4,a5,%lo(arr)
+	lw	a5,-24(s0)
+	slli	a5,a5,2
+	add	a5,a4,a5
+	lw	a5,0(a5)
+	sw	a5,-28(s0)
+	lw	a5,-24(s0)
+	addi	a5,a5,1
+	lui	a4,%hi(arr)
+	addi	a4,a4,%lo(arr)
+	slli	a5,a5,2
+	add	a5,a4,a5
+	lw	a4,0(a5)
+	lui	a5,%hi(arr)
+	addi	a3,a5,%lo(arr)
+	lw	a5,-24(s0)
+	slli	a5,a5,2
+	add	a5,a3,a5
+	sw	a4,0(a5)
+	lw	a5,-24(s0)
+	addi	a5,a5,1
+	lui	a4,%hi(arr)
+	addi	a4,a4,%lo(arr)
+	slli	a5,a5,2
+	add	a5,a4,a5
+	lw	a4,-28(s0)
+	sw	a4,0(a5)
 .L4:
-	lw	a4,-20(s0)
-	lw	a5,-24(s0)
-	add	a3,a4,a5
-	lui	a5,%hi(A)
-	addi	a2,a5,%lo(A)
-	lw	a4,-20(s0)
-	mv	a5,a4
-	slli	a5,a5,1
-	add	a5,a5,a4
-	lw	a4,-24(s0)
-	add	a5,a5,a4
-	slli	a5,a5,2
-	add	a5,a2,a5
-	sw	a3,0(a5)
-	lw	a4,-20(s0)
-	lw	a5,-24(s0)
-	sub	a3,a4,a5
-	lui	a5,%hi(B)
-	addi	a2,a5,%lo(B)
-	lw	a4,-20(s0)
-	mv	a5,a4
-	slli	a5,a5,1
-	add	a5,a5,a4
-	lw	a4,-24(s0)
-	add	a5,a5,a4
-	slli	a5,a5,2
-	add	a5,a2,a5
-	sw	a3,0(a5)
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
 .L3:
+	lw	a4,-36(s0)
+	lw	a5,-20(s0)
+	sub	a5,a4,a5
+	addi	a5,a5,-1
 	lw	a4,-24(s0)
-	li	a5,2
-	ble	a4,a5,.L4
+	blt	a4,a5,.L5
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
 .L2:
+	lw	a5,-36(s0)
+	addi	a5,a5,-1
 	lw	a4,-20(s0)
-	li	a5,2
-	ble	a4,a5,.L5
+	blt	a4,a5,.L6
 	nop
 	nop
-	lw	s0,28(sp)
-	addi	sp,sp,32
+	lw	s0,44(sp)
+	addi	sp,sp,48
 	jr	ra
-	.size	init, .-init
-	.globl	__mulsi3
-	.align	2
-	.globl	multiply
-	.type	multiply, @function
-multiply:
-	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
-	addi	s0,sp,32
-	sw	zero,-20(s0)
-	j	.L7
-.L12:
-	sw	zero,-24(s0)
-	j	.L8
-.L11:
-	sw	zero,-32(s0)
-	sw	zero,-28(s0)
-	j	.L9
-.L10:
-	lui	a5,%hi(A)
-	addi	a3,a5,%lo(A)
-	lw	a4,-20(s0)
-	mv	a5,a4
-	slli	a5,a5,1
-	add	a5,a5,a4
-	lw	a4,-28(s0)
-	add	a5,a5,a4
-	slli	a5,a5,2
-	add	a5,a3,a5
-	lw	a2,0(a5)
-	lui	a5,%hi(B)
-	addi	a3,a5,%lo(B)
-	lw	a4,-28(s0)
-	mv	a5,a4
-	slli	a5,a5,1
-	add	a5,a5,a4
-	lw	a4,-24(s0)
-	add	a5,a5,a4
-	slli	a5,a5,2
-	add	a5,a3,a5
-	lw	a5,0(a5)
-	mv	a1,a5
-	mv	a0,a2
-	call	__mulsi3
-	mv	a5,a0
-	mv	a4,a5
-	lw	a5,-32(s0)
-	add	a5,a5,a4
-	sw	a5,-32(s0)
-	lw	a5,-28(s0)
-	addi	a5,a5,1
-	sw	a5,-28(s0)
-.L9:
-	lw	a4,-28(s0)
-	li	a5,2
-	ble	a4,a5,.L10
-	lui	a5,%hi(C)
-	addi	a3,a5,%lo(C)
-	lw	a4,-20(s0)
-	mv	a5,a4
-	slli	a5,a5,1
-	add	a5,a5,a4
-	lw	a4,-24(s0)
-	add	a5,a5,a4
-	slli	a5,a5,2
-	add	a5,a3,a5
-	lw	a4,-32(s0)
-	sw	a4,0(a5)
-	lw	a5,-24(s0)
-	addi	a5,a5,1
-	sw	a5,-24(s0)
-.L8:
-	lw	a4,-24(s0)
-	li	a5,2
-	ble	a4,a5,.L11
-	lw	a5,-20(s0)
-	addi	a5,a5,1
-	sw	a5,-20(s0)
-.L7:
-	lw	a4,-20(s0)
-	li	a5,2
-	ble	a4,a5,.L12
-	nop
-	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
-	addi	sp,sp,32
-	jr	ra
-	.size	multiply, .-multiply
+	.size	bubble_sort, .-bubble_sort
 	.align	2
 	.globl	main
 	.type	main, @function
@@ -182,8 +101,8 @@ main:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-	call	init
-	call	multiply
+	li	a0,100
+	call	bubble_sort
 	li	a5,0
 	mv	a0,a5
 	lw	ra,12(sp)

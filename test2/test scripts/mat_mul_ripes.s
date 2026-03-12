@@ -1,3 +1,14 @@
+# -----------------------------------------------------------------------
+# _start: Ripes entry point — calls main, then exits via ecall
+# -----------------------------------------------------------------------
+	.text
+	.globl	_start
+_start:
+	call	main
+	li	a7, 10		# Ripes exit ecall (terminate simulation)
+	ecall
+
+
 	.text
 	.globl	A
 	.bss
