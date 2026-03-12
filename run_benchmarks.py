@@ -24,12 +24,24 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Optional
 
+from dotenv import load_dotenv
+
+# Load .env from the project root (same directory as this script).
+load_dotenv(Path(__file__).resolve().parent / ".env")
+
 # ── Configuration ─────────────────────────────────────────────────────────────
-RIPES_EXE = r"C:\Ripes-v2.2.6-77-g4981e31-win-x86_64\Ripes.exe"
+# Set RIPES_EXE in your .env file (see .env.example).
+RIPES_EXE = os.getenv("RIPES_EXE", "")
+if not RIPES_EXE:
+    raise EnvironmentError(
+        "RIPES_EXE is not set.\n"
+        "Copy .env.example to .env and fill in the path to your Ripes executable."
+    )
 
 RIPES_BASE_ARGS = [
     "--mode", "cli",
