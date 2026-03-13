@@ -34,6 +34,7 @@ STRIP_DIRECTIVE_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"^\s*\.ident\b"),
     re.compile(r"^\s*\.type\b"),
     re.compile(r"^\s*\.size\b"),
+    re.compile(r"^\s*\.section\b"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -90,6 +91,13 @@ def strip_gcc_directives(lines: list[str]) -> list[str]:
         cleaned.append(line)
     return cleaned
 
+def fix_local_labels(lines: list[str]) -> list[str]:
+    """Replace GCC local labels starting with .L to L to avoid Ripes parsing errors."""
+    fixed: list[str] = []
+    for line in lines:
+        new_line = re.sub(r'(?<!\w)\.L([a-zA-Z0-9_]+)', r'L\1', line)
+        fixed.append(new_line)
+    return fixed
 
 def needs_mulsi3(lines: list[str]) -> bool:
     """Return True if any line calls __mulsi3."""
@@ -104,8 +112,9 @@ def convert(input_path: Path, output_path: Path, add_start_stub: bool) -> None:
     src = input_path.read_text(encoding="utf-8")
     lines = src.splitlines(keepends=True)
 
-    # 1. Strip unsupported directives
+    # 1. Strip unsupported directives and fix local labels
     lines = strip_gcc_directives(lines)
+    lines = fix_local_labels(lines)
 
     # 2. Optionally prepend _start stub (before all other .text content)
     extra_header: list[str] = []

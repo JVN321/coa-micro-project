@@ -23,14 +23,15 @@ C:
 	.globl	init
 init:
 	addi	sp,sp,-32
-	sw	s0,28(sp)
+	sw	ra,28(sp)
+	sw	s0,24(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
-	j	.L2
-.L5:
+	j	L2
+L5:
 	sw	zero,-24(s0)
-	j	.L3
-.L4:
+	j	L3
+L4:
 	lw	a4,-20(s0)
 	lw	a5,-24(s0)
 	add	a3,a4,a5
@@ -62,23 +63,23 @@ init:
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L3:
+L3:
 	lw	a4,-24(s0)
 	li	a5,2
-	ble	a4,a5,.L4
+	ble	a4,a5,L4
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L2:
+L2:
 	lw	a4,-20(s0)
 	li	a5,2
 	nop
-	ble	a4,a5,.L5
+	ble	a4,a5,L5
 	nop
-	lw	s0,28(sp)
+	lw	ra,28(sp)
+	lw	s0,24(sp)
 	addi	sp,sp,32
 	jr	ra
-	.globl	__mulsi3
 	.align	2
 	.globl	multiply
 multiply:
@@ -87,15 +88,15 @@ multiply:
 	sw	s0,24(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
-	j	.L7
-.L12:
+	j	L7
+L12:
 	sw	zero,-24(s0)
-	j	.L8
-.L11:
+	j	L8
+L11:
 	sw	zero,-32(s0)
 	sw	zero,-28(s0)
-	j	.L9
-.L10:
+	j	L9
+L10:
 	lui	a5,%hi(A)
 	lw	a4,-20(s0)
 	addi	a3,a5,%lo(A)
@@ -129,10 +130,10 @@ multiply:
 	lw	a5,-28(s0)
 	addi	a5,a5,1
 	sw	a5,-28(s0)
-.L9:
+L9:
 	lw	a4,-28(s0)
 	li	a5,2
-	ble	a4,a5,.L10
+	ble	a4,a5,L10
 	lui	a5,%hi(C)
 	lw	a4,-20(s0)
 	addi	a3,a5,%lo(C)
@@ -148,18 +149,18 @@ multiply:
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L8:
+L8:
 	lw	a4,-24(s0)
 	li	a5,2
-	ble	a4,a5,.L11
+	ble	a4,a5,L11
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L7:
+L7:
 	lw	a4,-20(s0)
 	li	a5,2
 	nop
-	ble	a4,a5,.L12
+	ble	a4,a5,L12
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)
@@ -180,6 +181,7 @@ main:
 	lw	s0,8(sp)
 	addi	sp,sp,16
 	jr	ra
+	.globl	__mulsi3
 	.text
 __mulsi3:
 	mv	t0, a0

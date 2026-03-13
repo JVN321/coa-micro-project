@@ -27,7 +27,6 @@ kernel:
 	.align	2
 output:
 	.zero	400
-	.globl	__mulsi3
 	.text
 	.align	2
 	.globl	compute
@@ -39,8 +38,8 @@ compute:
 	addi	s0,sp,32
 	li	a5,1
 	sw	a5,-20(s0)
-	j	.L2
-.L3:
+	j	L2
+L3:
 	lw	a5,-20(s0)
 	addi	a5,a5,-1
 	lui	a4,%hi(input)
@@ -94,10 +93,10 @@ compute:
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L2:
+L2:
 	lw	a4,-20(s0)
 	li	a5,98
-	ble	a4,a5,.L3
+	ble	a4,a5,L3
 	nop
 	nop
 	lw	ra,28(sp)
@@ -119,6 +118,7 @@ main:
 	lw	s0,8(sp)
 	addi	sp,sp,16
 	jr	ra
+	.globl	__mulsi3
 
 	.text
 # -----------------------------------------------------------------------

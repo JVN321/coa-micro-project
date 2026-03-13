@@ -24,7 +24,8 @@ B:
 	.globl	compute
 compute:
 	addi	sp,sp,-32
-	sw	s0,28(sp)
+	sw	ra,28(sp)
+	sw	s0,24(sp)
 	addi	s0,sp,32
 	lui	a5,%hi(A)
 	addi	a5,a5,%lo(A)
@@ -34,8 +35,8 @@ compute:
 	sw	a4,0(a5)
 	li	a5,1
 	sw	a5,-20(s0)
-	j	.L2
-.L3:
+	j	L2
+L3:
 	lw	a5,-20(s0)
 	addi	a5,a5,-1
 	lui	a4,%hi(B)
@@ -59,13 +60,14 @@ compute:
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L2:
+L2:
 	lw	a4,-20(s0)
 	li	a5,199
-	ble	a4,a5,.L3
+	ble	a4,a5,L3
 	nop
 	nop
-	lw	s0,28(sp)
+	lw	ra,28(sp)
+	lw	s0,24(sp)
 	addi	sp,sp,32
 	jr	ra
 	.align	2

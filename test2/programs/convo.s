@@ -1,6 +1,6 @@
 	.file	"convo.c"
 	.option nopic
-	.attribute arch, "rv32i2p0"
+	.attribute arch, "rv32i2p1"
 	.attribute unaligned_access, 0
 	.attribute stack_align, 16
 	.text
@@ -27,7 +27,6 @@ kernel:
 	.size	output, 400
 output:
 	.zero	400
-	.globl	__mulsi3
 	.text
 	.align	2
 	.globl	compute
@@ -123,4 +122,6 @@ main:
 	addi	sp,sp,16
 	jr	ra
 	.size	main, .-main
-	.ident	"GCC: (GNU) 10.1.0"
+	.globl	__mulsi3
+	.ident	"GCC: (Arch User Repository) 14.2.0"
+	.section	.note.GNU-stack,"",@progbits

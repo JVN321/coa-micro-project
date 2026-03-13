@@ -15,15 +15,16 @@ arr:
 	.globl	bubble_sort
 bubble_sort:
 	addi	sp,sp,-48
-	sw	s0,44(sp)
+	sw	ra,44(sp)
+	sw	s0,40(sp)
 	addi	s0,sp,48
 	sw	a0,-36(s0)
 	sw	zero,-20(s0)
-	j	.L2
-.L6:
+	j	L2
+L6:
 	sw	zero,-24(s0)
-	j	.L3
-.L5:
+	j	L3
+L5:
 	lui	a5,%hi(arr)
 	lui	a3,%hi(arr)
 	addi	a4,a5,%lo(arr)
@@ -37,7 +38,7 @@ bubble_sort:
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,0(a5)
-	ble	a4,a5,.L4
+	ble	a4,a5,L4
 	lui	a5,%hi(arr)
 	addi	a4,a5,%lo(arr)
 	lw	a5,-24(s0)
@@ -66,28 +67,29 @@ bubble_sort:
 	slli	a5,a5,2
 	add	a5,a4,a5
 	sw	a4,0(a5)
-.L4:
+L4:
 	lw	a5,-24(s0)
 	addi	a5,a5,1
 	sw	a5,-24(s0)
-.L3:
+L3:
 	lw	a4,-36(s0)
 	lw	a5,-20(s0)
 	sub	a5,a4,a5
 	addi	a5,a5,-1
 	lw	a4,-24(s0)
-	blt	a4,a5,.L5
+	blt	a4,a5,L5
 	lw	a5,-20(s0)
 	addi	a5,a5,1
 	sw	a5,-20(s0)
-.L2:
+L2:
 	lw	a5,-36(s0)
 	lw	a4,-20(s0)
 	addi	a5,a5,-1
-	blt	a4,a5,.L6
+	blt	a4,a5,L6
 	nop
 	nop
-	lw	s0,44(sp)
+	lw	ra,44(sp)
+	lw	s0,40(sp)
 	addi	sp,sp,48
 	jr	ra
 	.align	2
