@@ -1,0 +1,7 @@
+
+Algorithm:
+    window_size = 3
+    for each instruction i:
+        if instruction i depends on instruction i-1:
+            search the next (window_size - 2) instructions for one independent of both i-1 and i
+            if found, move it between i-1 and i
