@@ -1,4 +1,3 @@
 program,processor,orig_cycles,orig_instructions,orig_cpi,orig_ipc,orig_stalls,orig_stall_rate,orig_efficiency,reor_cycles,reor_instructions,reor_cpi,reor_ipc,reor_stalls,reor_stall_rate,reor_efficiency,cycles_saved,stalls_saved,pct_cycle_improvement,pct_cpi_improvement,pct_stall_improvement,pct_ipc_improvement
 arith_dependency,RV32_5S,28,22,1.272727,0.785714,2,0.090909,0.785714,28,22,1.272727,0.785714,2,0.090909,0.785714,0,0,0.0,0.0,0.0,-0.0
 independent_seq,RV32_5S,28,22,1.272727,0.785714,2,0.090909,0.785714,28,22,1.272727,0.785714,2,0.090909,0.785714,0,0,0.0,0.0,0.0,-0.0
-load_use,RV32_5S,50,36,1.388889,0.72,10,0.277778,0.72,42,36,1.166667,0.857143,2,0.055556,0.857143,8,8,16.0,16.0,80.0,19.047619
