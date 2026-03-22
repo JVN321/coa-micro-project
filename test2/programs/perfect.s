@@ -1,6 +1,6 @@
 	.file	"perfect.c"
 	.option nopic
-	.attribute arch, "rv32i2p1"
+	.attribute arch, "rv32i2p0"
 	.attribute unaligned_access, 0
 	.attribute stack_align, 16
 	.text
@@ -23,8 +23,7 @@ B:
 	.type	compute, @function
 compute:
 	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	sw	s0,28(sp)
 	addi	s0,sp,32
 	lui	a5,%hi(A)
 	addi	a5,a5,%lo(A)
@@ -65,8 +64,7 @@ compute:
 	ble	a4,a5,.L3
 	nop
 	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
+	lw	s0,28(sp)
 	addi	sp,sp,32
 	jr	ra
 	.size	compute, .-compute
@@ -86,5 +84,4 @@ main:
 	addi	sp,sp,16
 	jr	ra
 	.size	main, .-main
-	.ident	"GCC: (Arch User Repository) 14.2.0"
-	.section	.note.GNU-stack,"",@progbits
+	.ident	"GCC: (GNU) 10.1.0"

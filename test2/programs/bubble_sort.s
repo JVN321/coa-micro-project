@@ -1,6 +1,6 @@
 	.file	"bubble_sort.c"
 	.option nopic
-	.attribute arch, "rv32i2p1"
+	.attribute arch, "rv32i2p0"
 	.attribute unaligned_access, 0
 	.attribute stack_align, 16
 	.text
@@ -17,8 +17,7 @@ arr:
 	.type	bubble_sort, @function
 bubble_sort:
 	addi	sp,sp,-48
-	sw	ra,44(sp)
-	sw	s0,40(sp)
+	sw	s0,44(sp)
 	addi	s0,sp,48
 	sw	a0,-36(s0)
 	sw	zero,-20(s0)
@@ -90,8 +89,7 @@ bubble_sort:
 	blt	a4,a5,.L6
 	nop
 	nop
-	lw	ra,44(sp)
-	lw	s0,40(sp)
+	lw	s0,44(sp)
 	addi	sp,sp,48
 	jr	ra
 	.size	bubble_sort, .-bubble_sort
@@ -112,5 +110,4 @@ main:
 	addi	sp,sp,16
 	jr	ra
 	.size	main, .-main
-	.ident	"GCC: (Arch User Repository) 14.2.0"
-	.section	.note.GNU-stack,"",@progbits
+	.ident	"GCC: (GNU) 10.1.0"

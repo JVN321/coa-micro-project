@@ -6,17 +6,12 @@ _start:
 	ecall
 	.text
 	.globl	arr
-	.bss
-	.align	2
-arr:
-	.zero	200
 	.text
 	.align	2
 	.globl	init
 init:
 	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	sw	s0,28(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
 	j	L2
@@ -39,16 +34,14 @@ L2:
 	nop
 	ble	a4,a5,L3
 	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
+	lw	s0,28(sp)
 	addi	sp,sp,32
 	jr	ra
 	.align	2
 	.globl	selection_sort
 selection_sort:
 	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	sw	s0,28(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
 	j	L5
@@ -118,8 +111,7 @@ L5:
 	nop
 	ble	a4,a5,L9
 	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
+	lw	s0,28(sp)
 	addi	sp,sp,32
 	jr	ra
 	.align	2
@@ -137,3 +129,7 @@ main:
 	lw	s0,8(sp)
 	addi	sp,sp,16
 	jr	ra
+	.bss
+	.align	2
+arr:
+	.zero	200

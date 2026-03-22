@@ -6,22 +6,6 @@ _start:
 	ecall
 	.text
 	.globl	input
-	.bss
-	.align	2
-input:
-	.zero	400
-	.globl	kernel
-	.data
-	.align	2
-kernel:
-	.word	1
-	.word	2
-	.word	1
-	.globl	output
-	.bss
-	.align	2
-output:
-	.zero	400
 	.text
 	.align	2
 	.globl	compute
@@ -113,6 +97,22 @@ main:
 	lw	s0,8(sp)
 	addi	sp,sp,16
 	jr	ra
+	.bss
+	.align	2
+input:
+	.zero	400
+	.globl	kernel
+	.data
+	.align	2
+kernel:
+	.word	1
+	.word	2
+	.word	1
+	.globl	output
+	.bss
+	.align	2
+output:
+	.zero	400
 	.globl	__mulsi3
 	.text
 __mulsi3:

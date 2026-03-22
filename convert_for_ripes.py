@@ -34,7 +34,6 @@ STRIP_DIRECTIVE_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"^\s*\.ident\b"),
     re.compile(r"^\s*\.type\b"),
     re.compile(r"^\s*\.size\b"),
-    re.compile(r"^\s*\.section\b"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -99,6 +98,43 @@ def fix_local_labels(lines: list[str]) -> list[str]:
         fixed.append(new_line)
     return fixed
 
+def reorder_data_sections(lines: list[str]) -> list[str]:
+    """Move all data and rodata sections to the end of the file.
+    Because Ripes assembler does not support forward references to labels in .word directives,
+    we ensure all code is defined before data sections reference them."""
+    text_lines = []
+    data_lines = []
+    
+    current_section = "text"
+    
+    for line in lines:
+        stripped = line.strip()
+        if stripped == ".text":
+            current_section = "text"
+            text_lines.append(line)
+        elif stripped.startswith(".section") and (".rodata" in stripped or ".data" in stripped or ".sdata" in stripped):
+            current_section = "data"
+            data_lines.append("\t.data\n")
+        elif stripped == ".data":
+            current_section = "data"
+            data_lines.append(line)
+        elif stripped.startswith(".section") and (".bss" in stripped or ".sbss" in stripped):
+            current_section = "bss"
+            data_lines.append("\t.bss\n")
+        elif stripped == ".bss":
+            current_section = "bss"
+            data_lines.append(line)
+        elif stripped.startswith(".section"):
+            # Any other section goes to text but striped
+            current_section = "text"
+        else:
+            if current_section == "text":
+                text_lines.append(line)
+            else:
+                data_lines.append(line)
+                
+    return text_lines + ["\n"] + data_lines
+
 def needs_mulsi3(lines: list[str]) -> bool:
     """Return True if any line calls __mulsi3."""
     for line in lines:
@@ -115,6 +151,9 @@ def convert(input_path: Path, output_path: Path, add_start_stub: bool) -> None:
     # 1. Strip unsupported directives and fix local labels
     lines = strip_gcc_directives(lines)
     lines = fix_local_labels(lines)
+    
+    # Move data sections to end to avoid forward-reference bugs in Ripes assembler
+    lines = reorder_data_sections(lines)
 
     # 2. Optionally prepend _start stub (before all other .text content)
     extra_header: list[str] = []

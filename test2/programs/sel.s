@@ -1,6 +1,6 @@
 	.file	"sel.c"
 	.option nopic
-	.attribute arch, "rv32i2p1"
+	.attribute arch, "rv32i2p0"
 	.attribute unaligned_access, 0
 	.attribute stack_align, 16
 	.text
@@ -17,8 +17,7 @@ arr:
 	.type	init, @function
 init:
 	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	sw	s0,28(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
 	j	.L2
@@ -41,8 +40,7 @@ init:
 	ble	a4,a5,.L3
 	nop
 	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
+	lw	s0,28(sp)
 	addi	sp,sp,32
 	jr	ra
 	.size	init, .-init
@@ -51,8 +49,7 @@ init:
 	.type	selection_sort, @function
 selection_sort:
 	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	sw	s0,28(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
 	j	.L5
@@ -122,8 +119,7 @@ selection_sort:
 	ble	a4,a5,.L9
 	nop
 	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
+	lw	s0,28(sp)
 	addi	sp,sp,32
 	jr	ra
 	.size	selection_sort, .-selection_sort
@@ -144,5 +140,4 @@ main:
 	addi	sp,sp,16
 	jr	ra
 	.size	main, .-main
-	.ident	"GCC: (Arch User Repository) 14.2.0"
-	.section	.note.GNU-stack,"",@progbits
+	.ident	"GCC: (GNU) 10.1.0"

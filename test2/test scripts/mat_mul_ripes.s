@@ -11,25 +11,12 @@ _start:
 
 	.text
 	.globl	A
-	.bss
-	.align	2
-A:
-	.zero	36
-	.globl	B
-	.align	2
-B:
-	.zero	36
-	.globl	C
-	.align	2
-C:
-	.zero	36
 	.text
 	.align	2
 	.globl	init
 init:
 	addi	sp,sp,-32
-	sw	ra,28(sp)
-	sw	s0,24(sp)
+	sw	s0,28(sp)
 	addi	s0,sp,32
 	sw	zero,-20(s0)
 	j	L2
@@ -81,10 +68,10 @@ L2:
 	ble	a4,a5,L5
 	nop
 	nop
-	lw	ra,28(sp)
-	lw	s0,24(sp)
+	lw	s0,28(sp)
 	addi	sp,sp,32
 	jr	ra
+	.globl	__mulsi3
 	.align	2
 	.globl	multiply
 multiply:
@@ -186,7 +173,19 @@ main:
 	lw	s0,8(sp)
 	addi	sp,sp,16
 	jr	ra
-	.globl	__mulsi3
+
+	.bss
+	.align	2
+A:
+	.zero	36
+	.globl	B
+	.align	2
+B:
+	.zero	36
+	.globl	C
+	.align	2
+C:
+	.zero	36
 
 	.text
 # -----------------------------------------------------------------------

@@ -11,17 +11,12 @@ _start:
 
 	.text
 	.globl	arr
-	.bss
-	.align	2
-arr:
-	.zero	400
 	.text
 	.align	2
 	.globl	bubble_sort
 bubble_sort:
 	addi	sp,sp,-48
-	sw	ra,44(sp)
-	sw	s0,40(sp)
+	sw	s0,44(sp)
 	addi	s0,sp,48
 	sw	a0,-36(s0)
 	sw	zero,-20(s0)
@@ -93,8 +88,7 @@ L2:
 	blt	a4,a5,L6
 	nop
 	nop
-	lw	ra,44(sp)
-	lw	s0,40(sp)
+	lw	s0,44(sp)
 	addi	sp,sp,48
 	jr	ra
 	.align	2
@@ -112,3 +106,8 @@ main:
 	lw	s0,8(sp)
 	addi	sp,sp,16
 	jr	ra
+
+	.bss
+	.align	2
+arr:
+	.zero	400

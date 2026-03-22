@@ -1,4 +1,4 @@
-#define N 30
+#define N 20
 
 int A[N][N];
 int B[N][N];
