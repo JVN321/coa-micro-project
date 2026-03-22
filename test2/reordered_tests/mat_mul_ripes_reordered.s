@@ -31,9 +31,9 @@ L4:
 	lw	a4,-24(s0)
 	add	a5,a5,a4
 	slli	a5,a5,2
-	lw	a4,-20(s0)
 	add	a5,a2,a5
 	sw	a3,0(a5)
+	lw	a4,-20(s0)
 	lw	a5,-24(s0)
 	sub	a3,a4,a5
 	lui	a5,%hi(B)
@@ -60,8 +60,8 @@ L3:
 L2:
 	lw	a4,-20(s0)
 	li	a5,2
-	nop
 	ble	a4,a5,L5
+	nop
 	nop
 	lw	s0,28(sp)
 	addi	sp,sp,32
@@ -93,20 +93,20 @@ L10:
 	lw	a4,-28(s0)
 	add	a5,a5,a4
 	slli	a5,a5,2
-	lw	a4,-28(s0)
 	add	a5,a3,a5
-	lw	a4,-24(s0)
 	lw	a2,0(a5)
 	lui	a5,%hi(B)
+	lw	a4,-28(s0)
 	addi	a3,a5,%lo(B)
-	mv	a0,a2
 	mv	a5,a4
 	slli	a5,a5,1
 	add	a5,a5,a4
+	lw	a4,-24(s0)
 	add	a5,a5,a4
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,0(a5)
+	mv	a0,a2
 	mv	a1,a5
 	call	__mulsi3
 	mv	a5,a0
@@ -146,8 +146,8 @@ L8:
 L7:
 	lw	a4,-20(s0)
 	li	a5,2
-	nop
 	ble	a4,a5,L12
+	nop
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)

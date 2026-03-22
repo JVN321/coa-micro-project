@@ -50,6 +50,16 @@ BRANCH_OPS = {
     "bge",
     "bltu",
     "bgeu",
+    "ble",
+    "bleu",
+    "bgt",
+    "bgtu",
+    "beqz",
+    "bnez",
+    "blez",
+    "bgez",
+    "bltz",
+    "bgtz",
 }
 
 JUMP_OPS = {"jal", "jalr", "j", "jr", "ret", "call", "tail"}

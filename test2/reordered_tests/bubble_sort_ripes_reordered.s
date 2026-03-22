@@ -21,15 +21,15 @@ L6:
 	j	L3
 L5:
 	lui	a5,%hi(arr)
-	lui	a3,%hi(arr)
 	addi	a4,a5,%lo(arr)
-	addi	a3,a3,%lo(arr)
 	lw	a5,-24(s0)
 	slli	a5,a5,2
 	add	a5,a4,a5
 	lw	a4,0(a5)
 	lw	a5,-24(s0)
+	lui	a3,%hi(arr)
 	addi	a5,a5,1
+	addi	a3,a3,%lo(arr)
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,0(a5)
@@ -37,30 +37,30 @@ L5:
 	lui	a5,%hi(arr)
 	addi	a4,a5,%lo(arr)
 	lw	a5,-24(s0)
-	lui	a4,%hi(arr)
 	slli	a5,a5,2
 	add	a5,a4,a5
 	lw	a5,0(a5)
 	sw	a5,-28(s0)
 	lw	a5,-24(s0)
-	addi	a4,a4,%lo(arr)
+	lui	a4,%hi(arr)
 	addi	a5,a5,1
+	addi	a4,a4,%lo(arr)
 	slli	a5,a5,2
 	add	a5,a4,a5
 	lw	a4,0(a5)
 	lui	a5,%hi(arr)
-	lui	a4,%hi(arr)
 	addi	a3,a5,%lo(arr)
-	addi	a4,a4,%lo(arr)
 	lw	a5,-24(s0)
-	lw	a4,-28(s0)
 	slli	a5,a5,2
 	add	a5,a3,a5
 	sw	a4,0(a5)
 	lw	a5,-24(s0)
+	lui	a4,%hi(arr)
 	addi	a5,a5,1
+	addi	a4,a4,%lo(arr)
 	slli	a5,a5,2
 	add	a5,a4,a5
+	lw	a4,-28(s0)
 	sw	a4,0(a5)
 L4:
 	lw	a5,-24(s0)

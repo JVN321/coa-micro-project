@@ -24,7 +24,7 @@ from riscv_parser import (
     parse_assembly_lines,
 )
 
-WINDOW_SIZE = 10
+WINDOW_SIZE = 3
 
 
 def depends_on(a: Instruction, b: Instruction) -> bool:

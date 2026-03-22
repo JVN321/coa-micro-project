@@ -29,16 +29,16 @@ L4:
 	lw	a4,-24(s0)
 	add	a5,a5,a4
 	slli	a5,a5,2
-	lw	a4,-24(s0)
 	add	a5,a3,a5
-	lw	a4,-20(s0)
 	lw	a3,0(a5)
 	lui	a5,%hi(B)
+	lw	a4,-24(s0)
 	addi	a2,a5,%lo(B)
 	mv	a5,a4
 	slli	a5,a5,2
 	add	a5,a5,a4
 	slli	a5,a5,2
+	lw	a4,-20(s0)
 	add	a5,a5,a4
 	slli	a5,a5,2
 	add	a5,a2,a5
@@ -56,8 +56,8 @@ L3:
 L2:
 	lw	a4,-20(s0)
 	li	a5,19
-	nop
 	ble	a4,a5,L5
+	nop
 	nop
 	lw	s0,28(sp)
 	addi	sp,sp,32

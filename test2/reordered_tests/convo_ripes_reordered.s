@@ -24,12 +24,12 @@ L3:
 	addi	a5,a5,-1
 	addi	a4,a4,%lo(input)
 	slli	a5,a5,2
-	mv	a0,a4
 	add	a5,a4,a5
 	lw	a4,0(a5)
 	lui	a5,%hi(kernel)
 	addi	a5,a5,%lo(kernel)
 	lw	a5,0(a5)
+	mv	a0,a4
 	mv	a1,a5
 	call	__mulsi3
 	mv	a5,a0
@@ -37,28 +37,28 @@ L3:
 	lui	a5,%hi(input)
 	addi	a4,a5,%lo(input)
 	lw	a5,-20(s0)
-	mv	a0,a4
 	slli	a5,a5,2
 	add	a5,a4,a5
 	lw	a4,0(a5)
 	lui	a5,%hi(kernel)
 	addi	a5,a5,%lo(kernel)
 	lw	a5,4(a5)
+	mv	a0,a4
 	mv	a1,a5
 	call	__mulsi3
 	mv	a5,a0
-	lui	a4,%hi(input)
 	add	s1,s1,a5
-	addi	a4,a4,%lo(input)
 	lw	a5,-20(s0)
-	mv	a0,a4
+	lui	a4,%hi(input)
 	addi	a5,a5,1
+	addi	a4,a4,%lo(input)
 	slli	a5,a5,2
 	add	a5,a4,a5
 	lw	a4,0(a5)
 	lui	a5,%hi(kernel)
 	addi	a5,a5,%lo(kernel)
 	lw	a5,8(a5)
+	mv	a0,a4
 	mv	a1,a5
 	call	__mulsi3
 	mv	a5,a0
@@ -75,8 +75,8 @@ L3:
 L2:
 	lw	a4,-20(s0)
 	li	a5,98
-	nop
 	ble	a4,a5,L3
+	nop
 	nop
 	lw	ra,28(sp)
 	lw	s0,24(sp)

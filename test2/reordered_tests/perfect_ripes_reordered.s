@@ -49,8 +49,8 @@ L3:
 L2:
 	lw	a4,-20(s0)
 	li	a5,199
-	nop
 	ble	a4,a5,L3
+	nop
 	nop
 	lw	s0,28(sp)
 	addi	sp,sp,32

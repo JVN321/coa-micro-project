@@ -14,10 +14,10 @@ compute:
 	sw	s0,28(sp)
 	addi	s0,sp,32
 	lui	a5,%hi(fib)
-	li	a4,1
 	addi	a5,a5,%lo(fib)
 	sw	zero,0(a5)
 	lui	a5,%hi(fib)
+	li	a4,1
 	addi	a5,a5,%lo(fib)
 	sw	a4,4(a5)
 	li	a5,2
@@ -29,12 +29,12 @@ L3:
 	addi	a5,a5,-1
 	addi	a4,a4,%lo(fib)
 	slli	a5,a5,2
-	lui	a3,%hi(fib)
 	add	a5,a4,a5
-	addi	a3,a3,%lo(fib)
 	lw	a4,0(a5)
 	lw	a5,-20(s0)
+	lui	a3,%hi(fib)
 	addi	a5,a5,-2
+	addi	a3,a3,%lo(fib)
 	slli	a5,a5,2
 	add	a5,a3,a5
 	lw	a5,0(a5)
@@ -51,8 +51,8 @@ L3:
 L2:
 	lw	a4,-20(s0)
 	li	a5,99
-	nop
 	ble	a4,a5,L3
+	nop
 	nop
 	lw	s0,28(sp)
 	addi	sp,sp,32
