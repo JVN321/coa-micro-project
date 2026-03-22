@@ -9,20 +9,19 @@ A conservative optimization toolchain for textual RISC-V assembly targeting a cl
 ```
 .
 ├── riscv_parser.py           # Reusable parser and instruction metadata extractor
-├── riscv_reorder.py          # Full list-scheduling reorder pass
-├── riscv_reorder_minimal.py  # Lightweight sliding-window reorder pass
+├── riscv_reorder_minimal.py  # Sliding-window reorder pass (only scheduler used)
 ├── reorder_all.py            # Batch-reorder every .s file in a tests directory
 ├── run_benchmarks.py         # Run Ripes CLI and collect JSON performance data
 ├── analyse_results.py        # Parse JSON results and produce analysis CSV
 ├── run.py                    # Top-level runner: reorder → benchmark → analyse
 ├── compile_c_for_ripes.py    # Compile C programs and convert them for Ripes
 ├── convert_for_ripes.py      # Convert a GCC .s file to a Ripes-compatible .s file
+├── build_graphs.py      # Parse CSV file and generates graphs
 ├── tests/                    # Default original assembly test programs
 ├── reordered_tests/          # Default output from reorder_all.py
 ├── results/                  # Default JSON outputs from Ripes + analysis.csv
 └── documentation/
     ├── README_parser.md
-    ├── README_reorder.md
     └── README_reorder_minimal.md
 ```
 
@@ -69,11 +68,11 @@ python compile_c_for_ripes.py my_test_set --start-stub
 
 What happens:
 
-| Step | Action |
-|------|--------|
-| 1 | Each `.c` file in `programs/` is compiled with `riscv32-unknown-elf-gcc -march=rv32i -mabi=ilp32 -O0 -nostdlib -S` to a raw `.s` file (kept in `programs/`). |
-| 2 | `convert_for_ripes.py` strips GCC-only directives, inlines `__mulsi3` if needed, and (with `--start-stub`) prepends a `_start` entry point that calls `main` and exits via `ecall`. |
-| 3 | The `*_ripes.s` files are moved to `my_test_set/test scripts/`, ready to load in Ripes. |
+| Step | Action                                                                                                                                                                                          |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Each `.c` file in `programs/` is compiled with `riscv32-unknown-elf-gcc -march=rv32i -mabi=ilp32 -O0 -nostdlib -S` to a raw `.s` file (kept in `programs/`).                          |
+| 2    | `convert_for_ripes.py` strips GCC-only directives, inlines `__mulsi3` if needed, and (with `--start-stub`) prepends a `_start` entry point that calls `main` and exits via `ecall`. |
+| 3    | The `*_ripes.s` files are moved to `my_test_set/test scripts/`, ready to load in Ripes.                                                                                                     |
 
 After running:
 
@@ -135,13 +134,7 @@ What `convert_for_ripes.py` does:
 
 ### Running stages individually
 
-#### 1. Reorder a single file (full list-scheduling pass)
-
-```bash
-python riscv_reorder.py input.s output.s
-```
-
-#### 2. Reorder a single file (lightweight sliding-window pass)
+#### Reorder a single file (lightweight sliding-window pass)
 
 ```bash
 python riscv_reorder_minimal.py input.s output.s
@@ -173,6 +166,7 @@ python run_benchmarks.py \
 **Prerequisites:** Ripes CLI must be installed. Set `RIPES_EXE` in your `.env` file. Run `reorder_all.py` first so that the reordered directory is populated.
 
 What it does:
+
 1. Runs every `*.s` in `tests-dir` → `<results-dir>/<stem>_original.json`
 2. Runs every `*.s` in `reordered-dir` → `<results-dir>/<stem>_reordered.json`
 3. Prints a side-by-side comparison table (cycles, IPC, CPI).
@@ -193,6 +187,36 @@ No Ripes installation required — operates entirely on JSON files already produ
 - Computes performance metrics: cycles, instructions retired, IPC, CPI, and pipeline stall counts.
 - Prints a formatted analysis table to the terminal.
 - Writes/overwrites `<results-dir>/analysis.csv`.
+
+---
+
+## Graph Generation
+
+Use `build_graphs.py` to produce visual summaries (PNG/SVG) from an existing `analysis.csv` file.
+
+Basic usage (run from repository root or your test-set folder):
+
+```bash
+python build_graphs.py <test_set_folder>
+```
+
+Examples:
+
+```bash
+# Read results/analysis.csv inside "test2" and write image files to test2/results/graphs/
+python build_graphs.py test2
+
+# Read the default results/analysis.csv in the repository
+python build_graphs.py
+```
+
+What it does:
+
+- Loads `<results-dir>/analysis.csv` for the specified test set.
+- Generates a set of comparative graphs (cycles, IPC, CPI, stall breakdowns) and writes them into `<results-dir>/graphs/`.
+- Useful for quick visual inspection when comparing original vs reordered runs across the whole test set.
+
+Ensure you've already run `run_benchmarks.py` and `analyse_results.py` so that `analysis.csv` exists before calling `build_graphs.py`.
 
 ---
 
@@ -247,23 +271,15 @@ python run.py [optional: "path/to/test_folder"]
 
 ## Reordering Passes
 
-### `riscv_reorder.py` — Full List Scheduler
+### `riscv_reorder_minimal.py` — Sliding-Window Scheduler (current)
 
-Builds a complete dependency graph for each local scheduling region and applies a list-scheduling strategy:
+This project now uses a single, lightweight scheduling pass: `riscv_reorder_minimal.py`.
 
-- Enforces hard `RAW`, `WAR`, and `WAW` register dependencies.
-- Keeps all load/store operations in their original relative order (conservative alias handling).
-- Uses a soft latency preference to place at least one independent instruction between a load and its consumer.
-- When multiple instructions are ready, prefers those that satisfy latency constraints, falling back to original-order tie-breaking.
+- Scans instructions one at a time using a sliding window (default `WINDOW_SIZE = 3`).
+- When instruction `i` depends on `i-1`, the pass searches a short lookahead for an independent instruction and moves it to fill the hazard slot.
+- Conservatively enforces `RAW`, `WAR`, and `WAW` register dependencies and preserves memory ordering for loads/stores.
 
-### `riscv_reorder_minimal.py` — Sliding-Window Scheduler
-
-Uses a simpler approach suitable for quick experimentation:
-
-- Scans instructions one at a time.
-- When instruction `i` depends on instruction `i-1`, searches up to `WINDOW_SIZE - 2` instructions ahead for an independent candidate.
-- If found, moves that candidate between `i-1` and `i` to fill the hazard slot.
-- Same dependency model (`RAW`, `WAW`, `WAR`, memory ordering) as the full pass.
+NOTE: The original full list-scheduling pass (`riscv_reorder.py`) has been removed from the active toolchain; it is no longer distributed or referenced in this repository. The minimal sliding-window pass is kept as the single, simple scheduler for experimentation and reproducible benchmarking on the supplied test sets.
 
 ---
 
