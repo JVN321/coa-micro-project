@@ -1,0 +1,18 @@
+---
+id: d89d72b3-90b6-4b60-9769-00f0a31d9f0a
+---
+%%{init: {"flowchart": {"nodeSpacing": 8, "rankSpacing": 20, "curve": "linear"}}}%%
+flowchart TD
+    A[Start]
+    B[Parse Assembly]
+    C[Extract Registers]
+    D[Check Dependency]
+    E{Hazard?}
+    F[Search Window]
+    G[Move Independent Instruction]
+    H[Keep Order]
+    I[Output Reordered Code]
+
+    A --> B --> C --> D --> E
+    E -- Yes --> F --> G --> I
+    E -- No --> H --> I

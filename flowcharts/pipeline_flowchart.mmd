@@ -1,0 +1,18 @@
+---
+id: 1237266e-aaea-4bba-9128-99db7a69cad4
+---
+%%{init: {"flowchart": {"nodeSpacing": 20, "rankSpacing": 20, "curve": "linear"}}}%%
+%% Pipeline Flowchart for RISC-V assembly optimizer
+flowchart TD
+  A["<b>C Program (.c)</b><br/>Source"] --> B["<b>compile_c_for_ripes.py</b><br/>Compile + convert"]
+  B --> C["<b>convert_for_ripes.py</b><br/>Ripes-ready assembly"]
+  C --> D["<b>Test Scripts (.s)</b><br/>Input scripts"]
+  D --> E["<b>reorder_all.py</b><br/>Uses minimal reordering"]
+  E --> F["<b>Reordered Assembly Scripts (.s)</b><br/>Output scripts"]
+  F --> G["<b>run_benchmarks.py</b><br/>Ripes -> JSON"]
+  G --> H["<b>analyse_results.py</b><br/>JSON -> CSV"]
+  H --> I["<b>build_graphs.py</b><br/>CSV -> graphs"]
+
+  classDef step fill:#ffffff,stroke:#000000,stroke-width:2px,color:#000000;
+  class A,B,C,D,E,F,G,H,I step
+  linkStyle default stroke:#000000,stroke-width:2px;
