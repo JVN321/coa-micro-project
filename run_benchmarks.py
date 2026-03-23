@@ -43,10 +43,14 @@ if not RIPES_EXE:
         "Copy .env.example to .env and fill in the path to your Ripes executable."
     )
 
+# You can specify the processor model via RIPES_PROC in your .env file.
+# By default, "RV32_5S" (with forwarding) is used. Use "RV32_5S_NO_FW" for no forwarding.
+RIPES_PROC = os.getenv("RIPES_PROC", "RV32_5S")
+
 RIPES_BASE_ARGS = [
     "--mode", "cli",
     "-t", "asm",
-    "--proc", "RV32_5S",
+    "--proc", RIPES_PROC,
     "--json",
     "--all",
 ]
