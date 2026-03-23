@@ -1,0 +1,120 @@
+{
+  "original": {
+    "by_hw": {
+      "forwarding": {
+        "total_cycles": 207164.0,
+        "total_instructions": 148014.0,
+        "cpi": 1.4,
+        "total_stall_cycles": 59126.0,
+        "total_stalls": 6.0,
+        "useful_cycles": 148038.0,
+        "pipeline_efficiency": 0.715
+      },
+      "no_forwarding": {
+        "total_cycles": 350350.0,
+        "total_instructions": 148014.0,
+        "cpi": 2.367,
+        "total_stall_cycles": 202312.0,
+        "total_stalls": 6.0,
+        "useful_cycles": 148038.0,
+        "pipeline_efficiency": 0.423
+      }
+    }
+  },
+  "reordered": {
+    "by_hw": {
+      "forwarding": {
+        "total_cycles": 200212.0,
+        "total_instructions": 148014.0,
+        "cpi": 1.353,
+        "total_stall_cycles": 52174.0,
+        "total_stalls": 6.0,
+        "useful_cycles": 148038.0,
+        "pipeline_efficiency": 0.739
+      },
+      "no_forwarding": {
+        "total_cycles": 336188.0,
+        "total_instructions": 148014.0,
+        "cpi": 2.271,
+        "total_stall_cycles": 188150.0,
+        "total_stalls": 6.0,
+        "useful_cycles": 148038.0,
+        "pipeline_efficiency": 0.44
+      }
+    }
+  },
+  "reordering_impact": {
+    "cpi_reduction_percent": 3.771,
+    "stall_reduction_percent": 8.076,
+    "efficiency_improvement": 0.021,
+    "cycles_saved": 21114.0
+  },
+  "per_test": [
+    {
+      "name": "bubble_sort_ripes",
+      "cpi_original": 1.437,
+      "cpi_reordered": 1.392,
+      "stalls_original": 50405.0,
+      "stalls_reordered": 45255.0,
+      "speedup_due_to_reordering": 1.032,
+      "stall_reduction_percent": 10.217
+    },
+    {
+      "name": "convo_ripes",
+      "cpi_original": 1.286,
+      "cpi_reordered": 1.232,
+      "stalls_original": 2560.0,
+      "stalls_reordered": 2070.0,
+      "speedup_due_to_reordering": 1.044,
+      "stall_reduction_percent": 19.141
+    },
+    {
+      "name": "fib_ripes",
+      "cpi_original": 1.262,
+      "cpi_reordered": 1.189,
+      "stalls_original": 698.0,
+      "stalls_reordered": 502.0,
+      "speedup_due_to_reordering": 1.061,
+      "stall_reduction_percent": 28.08
+    },
+    {
+      "name": "mat_mul_ripes",
+      "cpi_original": 1.324,
+      "cpi_reordered": 1.291,
+      "stalls_original": 1146.0,
+      "stalls_reordered": 1029.0,
+      "speedup_due_to_reordering": 1.026,
+      "stall_reduction_percent": 10.209
+    },
+    {
+      "name": "perfect_ripes",
+      "cpi_original": 1.27,
+      "cpi_reordered": 1.232,
+      "stalls_original": 1405.0,
+      "stalls_reordered": 1206.0,
+      "speedup_due_to_reordering": 1.031,
+      "stall_reduction_percent": 14.164
+    },
+    {
+      "name": "transpose_ripes",
+      "cpi_original": 1.238,
+      "cpi_reordered": 1.173,
+      "stalls_original": 2912.0,
+      "stalls_reordered": 2112.0,
+      "speedup_due_to_reordering": 1.056,
+      "stall_reduction_percent": 27.473
+    }
+  ],
+  "summary_stats": {
+    "avg_cpi_original": 1.303,
+    "avg_cpi_reordered": 1.252,
+    "avg_speedup": 1.042,
+    "max_speedup": 1.061,
+    "min_speedup": 1.026
+  },
+  "forwarding_effect": {
+    "included": true,
+    "speedup": 1.678,
+    "cpi_reduction_percent": 40.423
+  }
+}
