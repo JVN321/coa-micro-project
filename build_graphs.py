@@ -40,9 +40,13 @@ except Exception:
     plt.style.use("seaborn-darkgrid")
 
 # Default colors (blue/orange pair, high contrast)
-COLOR_PRIMARY = "#4C72B0"
-COLOR_SECOND = "#DD8452"
-COLOR_ACCENT = "#55A868"
+COLOR_FW_ORIG = "#A1C9F4"    # Pastel Blue
+COLOR_FW_REOR = "#8DE5A1"    # Pastel Green
+COLOR_NOFW_ORIG = "#FFB482"  # Pastel Orange
+COLOR_NOFW_REOR = "#FF9F9B"  # Pastel Red
+COLOR_PRIMARY = COLOR_FW_ORIG
+COLOR_SECOND = COLOR_FW_REOR
+COLOR_ACCENT = "#D0BBFF"     # Pastel Purple
 
 from riscv_parser import parse_assembly_lines, ParsedLine
 
@@ -68,7 +72,7 @@ def annotate_int_bars(ax, bars, offset_y=3, dx=0.0):
         x = b.get_x() + b.get_width() / 2 + dx
         txt = _format_int(int(hv))
         ax.annotate(txt, xy=(x, hv), xytext=(0, offset_y), textcoords="offset points",
-                    ha="center", va="bottom", fontsize=6, clip_on=False)
+                    ha="center", va="bottom", fontsize=10, clip_on=False)
 
 
 def annotate_float_bars(ax, bars, offset_y=3, dx=0.0, precision=3):
@@ -85,7 +89,7 @@ def annotate_float_bars(ax, bars, offset_y=3, dx=0.0, precision=3):
         x = b.get_x() + b.get_width() / 2 + dx
         txt = f"{hv:.{precision}f}"
         ax.annotate(txt, xy=(x, hv), xytext=(0, offset_y), textcoords="offset points",
-                    ha="center", va="bottom", fontsize=6, clip_on=False)
+                    ha="center", va="bottom", fontsize=10, clip_on=False)
 
 
 def _ensure_top_padding(ax, bars, pad=0.12):
@@ -140,20 +144,20 @@ def plot_cycles(df: pd.DataFrame, outpath: Path) -> None:
 
     x = range(len(programs))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 5), dpi=150)
-    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_PRIMARY)
-    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_SECOND)
+    fig, ax = plt.subplots(figsize=(max(16, len(programs) * 3.0), 8), dpi=150)
+    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_FW_ORIG)
+    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_FW_REOR)
     ax.set_ylabel("Cycles")
     ax.set_title("Cycles Comparison — Original vs Reordered")
     ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=8)
+    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=10)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=10)
     ax.grid(axis="y", alpha=0.25)
     # ensure some headroom so labels are not cropped
     _ensure_top_padding(ax, [bars1, bars2], pad=0.12)
-    # annotate (stagger bars so labels don't overlap)
-    annotate_int_bars(ax, bars1, offset_y=2, dx=-0.02)
-    annotate_int_bars(ax, bars2, offset_y=4, dx=0.02)
+    # annotate 
+    annotate_int_bars(ax, bars1, offset_y=2)
+    annotate_int_bars(ax, bars2, offset_y=2)
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.40)
     fig.savefig(outpath, transparent=True, bbox_inches="tight")
@@ -168,18 +172,18 @@ def plot_cpi(df: pd.DataFrame, outpath: Path) -> None:
 
     x = range(len(programs))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 5), dpi=150)
-    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_PRIMARY)
-    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_SECOND)
+    fig, ax = plt.subplots(figsize=(max(16, len(programs) * 3.0), 8), dpi=150)
+    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_FW_ORIG)
+    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_FW_REOR)
     ax.set_ylabel("CPI")
     ax.set_title("CPI Comparison — Original vs Reordered")
     ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=8)
+    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=10)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=10)
     ax.grid(axis="y", alpha=0.25)
     _ensure_top_padding(ax, [bars1, bars2], pad=0.12)
-    annotate_float_bars(ax, bars1, offset_y=2, dx=-0.02)
-    annotate_float_bars(ax, bars2, offset_y=4, dx=0.02)
+    annotate_float_bars(ax, bars1, offset_y=2)
+    annotate_float_bars(ax, bars2, offset_y=2)
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.35)
     fig.savefig(outpath, transparent=True, bbox_inches="tight")
@@ -194,18 +198,18 @@ def plot_stalls(df: pd.DataFrame, outpath: Path) -> None:
 
     x = range(len(programs))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 5), dpi=150)
-    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_PRIMARY)
-    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_SECOND)
+    fig, ax = plt.subplots(figsize=(max(16, len(programs) * 3.0), 8), dpi=150)
+    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_FW_ORIG)
+    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_FW_REOR)
     ax.set_ylabel("Stall cycles")
     ax.set_title("Stall Count Comparison — Original vs Reordered")
     ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=8)
+    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=10)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=10)
     ax.grid(axis="y", alpha=0.25)
     _ensure_top_padding(ax, [bars1, bars2], pad=0.12)
-    annotate_int_bars(ax, bars1, offset_y=2, dx=-0.02)
-    annotate_int_bars(ax, bars2, offset_y=4, dx=0.02)
+    annotate_int_bars(ax, bars1, offset_y=2)
+    annotate_int_bars(ax, bars2, offset_y=2)
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.35)
     fig.savefig(outpath, transparent=True, bbox_inches="tight")
@@ -295,177 +299,237 @@ def plot_hazards(programs: list[str], orig_counts: list[dict], reor_counts: list
 
     x = range(len(programs))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 5), dpi=150)
-    bars1 = ax.bar([i - width/2 for i in x], raws_orig, width, label="Unordered RAW", color=COLOR_PRIMARY)
-    bars2 = ax.bar([i + width/2 for i in x], raws_reor, width, label="Reordered RAW", color=COLOR_SECOND)
+    fig, ax = plt.subplots(figsize=(max(16, len(programs) * 3.0), 8), dpi=150)
+    bars1 = ax.bar([i - width/2 for i in x], raws_orig, width, label="Unordered RAW", color=COLOR_FW_ORIG)
+    bars2 = ax.bar([i + width/2 for i in x], raws_reor, width, label="Reordered RAW", color=COLOR_FW_REOR)
     ax.set_ylabel("RAW hazard count (static)")
     ax.set_title("Data Hazard (RAW) — static count from assembly")
     ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=8)
+    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=10)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=10)
     ax.grid(axis="y", alpha=0.25)
     _ensure_top_padding(ax, [bars1, bars2], pad=0.14)
-    # annotate side-by-side with tiny horizontal offsets to avoid overlap
-    annotate_int_bars(ax, bars1, offset_y=2, dx=-0.02)
-    annotate_int_bars(ax, bars2, offset_y=2, dx=0.02)
+    # annotate side-by-side
+    annotate_int_bars(ax, bars1, offset_y=2)
+    annotate_int_bars(ax, bars2, offset_y=2)
     fig.tight_layout()
     fig.subplots_adjust(bottom=0.25)
     fig.savefig(outpath, transparent=True, bbox_inches="tight")
     plt.close(fig)
 
-def _compute_pct_and_speedup(orig: pd.Series, reor: pd.Series) -> pd.DataFrame:
-    df = pd.DataFrame({"orig": orig.astype(float), "reor": reor.astype(float)})
-    # avoid divide-by-zero
-    df["speedup"] = df.apply(lambda r: r["orig"] / r["reor"] if r["reor"] and r["reor"] > 0 else 1.0, axis=1)
-    df["pct_improvement"] = df.apply(lambda r: ((r["orig"] - r["reor"]) / r["orig"] * 100.0)
-                                      if r["orig"] and r["orig"] > 0 else 0.0, axis=1)
-    return df
 
-
-def plot_pct_cycles_and_speedup(df_src: pd.DataFrame, outpath: Path) -> None:
-    programs = df_src["program"].astype(str)
+def _plot_combined_bars(programs, fw_orig, fw_reor, nofw_orig, nofw_reor,
+                        outpath: Path, ylabel: str, title: str,
+                        annotate_int: bool = True, precision: int = 3):
     label_names = [p.replace("_", "\n") for p in programs]
-    comp = _compute_pct_and_speedup(df_src["orig_cycles"], df_src["reor_cycles"])
-
     x = range(len(programs))
-    width = 0.6
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 4.5), dpi=150)
-    bars = ax.bar(x, comp["pct_improvement"], width, color=COLOR_ACCENT)
-    ax.set_ylabel("% Cycle Improvement")
-    ax.set_title("Percent Cycle Improvement (annotated speedup)")
+    # four bars per group: fw_orig, fw_reor, nofw_orig, nofw_reor
+    width = 0.22
+    fig, ax = plt.subplots(figsize=(max(16, len(programs) * 3.0), 8), dpi=150)
+    offs = [-1.5*width, -0.5*width, 0.5*width, 1.5*width]
+    bars_fw_orig = ax.bar([i + offs[0] for i in x], fw_orig, width, label="Orig (fw)", color=COLOR_FW_ORIG)
+    bars_fw_reor = ax.bar([i + offs[1] for i in x], fw_reor, width, label="Reor (fw)", color=COLOR_FW_REOR)
+    bars_nofw_orig = ax.bar([i + offs[2] for i in x], nofw_orig, width, label="Orig (no-fw)", color=COLOR_NOFW_ORIG)
+    bars_nofw_reor = ax.bar([i + offs[3] for i in x], nofw_reor, width, label="Reor (no-fw)", color=COLOR_NOFW_REOR)
+
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
     ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
+    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=10)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=4, frameon=False, fontsize=10)
     ax.grid(axis="y", alpha=0.25)
-    _ensure_top_padding(ax, bars, pad=0.14)
-    # annotate percent and speedup
-    for i, b in enumerate(bars):
-        pv = comp.iloc[i]["pct_improvement"]
-        sv = comp.iloc[i]["speedup"]
-        txt = f"{pv:.1f}%\n({sv:.2f}x)"
-        ax.annotate(txt, xy=(b.get_x() + b.get_width() / 2, b.get_height()),
-                    xytext=(0, 4), textcoords="offset points", ha="center", va="bottom",
-                    fontsize=6)
+    _ensure_top_padding(ax, [bars_fw_orig, bars_fw_reor, bars_nofw_orig, bars_nofw_reor], pad=0.12)
+
+    if annotate_int:
+        annotate_int_bars(ax, bars_fw_orig, offset_y=2)
+        annotate_int_bars(ax, bars_fw_reor, offset_y=2)
+        annotate_int_bars(ax, bars_nofw_orig, offset_y=2)
+        annotate_int_bars(ax, bars_nofw_reor, offset_y=2)
+    else:
+        annotate_float_bars(ax, bars_fw_orig, offset_y=2, precision=precision)
+        annotate_float_bars(ax, bars_fw_reor, offset_y=2, precision=precision)
+        annotate_float_bars(ax, bars_nofw_orig, offset_y=2, precision=precision)
+        annotate_float_bars(ax, bars_nofw_reor, offset_y=2, precision=precision)
+
     fig.tight_layout()
-    fig.subplots_adjust(bottom=0.30)
+    fig.subplots_adjust(bottom=0.45)
     fig.savefig(outpath, transparent=True, bbox_inches="tight")
     plt.close(fig)
 
 
-def plot_stall_rate(df_src: pd.DataFrame, outpath: Path) -> None:
-    # expects columns orig_stall_rate and reor_stall_rate
-    programs = df_src["program"].astype(str)
-    label_names = [p.replace("_", "\n") for p in programs]
-    orig = df_src["orig_stall_rate"].astype(float)
-    reor = df_src["reor_stall_rate"].astype(float)
+def plot_combined_cycles(df_fw: pd.DataFrame, df_nofw: pd.DataFrame, outpath: Path) -> None:
+    # align programs
+    prog = sorted(set(df_fw['program'].astype(str)).union(df_nofw['program'].astype(str)))
+    fw_map = {r['program']: r for _, r in df_fw.iterrows()}
+    nofw_map = {r['program']: r for _, r in df_nofw.iterrows()}
+    fw_orig = [float(fw_map.get(p, {}).get('orig_cycles', 0) or 0) for p in prog]
+    fw_reor = [float(fw_map.get(p, {}).get('reor_cycles', 0) or 0) for p in prog]
+    nofw_orig = [float(nofw_map.get(p, {}).get('orig_cycles', 0) or 0) for p in prog]
+    nofw_reor = [float(nofw_map.get(p, {}).get('reor_cycles', 0) or 0) for p in prog]
+    _plot_combined_bars(prog, fw_orig, fw_reor, nofw_orig, nofw_reor, outpath,
+                        ylabel="Cycles", title="Cycles Comparison")
 
-    x = range(len(programs))
-    width = 0.35
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 4.5), dpi=150)
-    bars1 = ax.bar([i - width/2 for i in x], orig, width, label="Unordered", color=COLOR_PRIMARY)
-    bars2 = ax.bar([i + width/2 for i in x], reor, width, label="Reordered", color=COLOR_SECOND)
-    ax.set_ylabel("Stall rate")
-    ax.set_title("Stall Rate Comparison — Original vs Reordered")
+
+def plot_combined_cpi(df_fw: pd.DataFrame, df_nofw: pd.DataFrame, outpath: Path) -> None:
+    prog = sorted(set(df_fw['program'].astype(str)).union(df_nofw['program'].astype(str)))
+    fw_map = {r['program']: r for _, r in df_fw.iterrows()}
+    nofw_map = {r['program']: r for _, r in df_nofw.iterrows()}
+    fw_orig = [float(fw_map.get(p, {}).get('orig_cpi', 0) or 0) for p in prog]
+    fw_reor = [float(fw_map.get(p, {}).get('reor_cpi', 0) or 0) for p in prog]
+    nofw_orig = [float(nofw_map.get(p, {}).get('orig_cpi', 0) or 0) for p in prog]
+    nofw_reor = [float(nofw_map.get(p, {}).get('reor_cpi', 0) or 0) for p in prog]
+    _plot_combined_bars(prog, fw_orig, fw_reor, nofw_orig, nofw_reor, outpath,
+                        ylabel="CPI", title="CPI comparison",
+                        annotate_int=False, precision=4)
+
+
+def plot_combined_stalls(df_fw: pd.DataFrame, df_nofw: pd.DataFrame, outpath: Path) -> None:
+    prog = sorted(set(df_fw['program'].astype(str)).union(df_nofw['program'].astype(str)))
+    fw_map = {r['program']: r for _, r in df_fw.iterrows()}
+    nofw_map = {r['program']: r for _, r in df_nofw.iterrows()}
+    fw_orig = [float(fw_map.get(p, {}).get('orig_stalls', 0) or 0) for p in prog]
+    fw_reor = [float(fw_map.get(p, {}).get('reor_stalls', 0) or 0) for p in prog]
+    nofw_orig = [float(nofw_map.get(p, {}).get('orig_stalls', 0) or 0) for p in prog]
+    nofw_reor = [float(nofw_map.get(p, {}).get('reor_stalls', 0) or 0) for p in prog]
+    _plot_combined_bars(prog, fw_orig, fw_reor, nofw_orig, nofw_reor, outpath,
+                        ylabel="Stall cycles", title="Stall count comparison")
+
+
+def plot_combined_stall_rate(df_fw: pd.DataFrame, df_nofw: pd.DataFrame, outpath: Path) -> None:
+    prog = sorted(set(df_fw['program'].astype(str)).union(df_nofw['program'].astype(str)))
+    fw_map = {r['program']: r for _, r in df_fw.iterrows()}
+    nofw_map = {r['program']: r for _, r in df_nofw.iterrows()}
+    fw_orig = [float(fw_map.get(p, {}).get('orig_stall_rate', 0) or 0) for p in prog]
+    fw_reor = [float(fw_map.get(p, {}).get('reor_stall_rate', 0) or 0) for p in prog]
+    nofw_orig = [float(nofw_map.get(p, {}).get('orig_stall_rate', 0) or 0) for p in prog]
+    nofw_reor = [float(nofw_map.get(p, {}).get('reor_stall_rate', 0) or 0) for p in prog]
+    _plot_combined_bars(prog, fw_orig, fw_reor, nofw_orig, nofw_reor, outpath,
+                        ylabel="Stall rate", title="Stall rate comparison",
+                        annotate_int=False, precision=3)
+
+
+def plot_combined_pct_metric(df_fw: pd.DataFrame, df_nofw: pd.DataFrame, orig_col: str, reor_col: str, pct_col: str, title: str, ylabel: str, outpath: Path) -> None:
+    prog = sorted(set(df_fw['program'].astype(str)).union(df_nofw['program'].astype(str)))
+    fw_map = {r['program']: r for _, r in df_fw.iterrows()}
+    nofw_map = {r['program']: r for _, r in df_nofw.iterrows()}
+    
+    pct_fw = [float(fw_map.get(p, {}).get(pct_col, 0) or 0) for p in prog]
+    pct_nofw = [float(nofw_map.get(p, {}).get(pct_col, 0) or 0) for p in prog]
+
+    def get_ratio(m):
+        try:
+            orig = float(m.get(orig_col, 0) or 0)
+            reor = float(m.get(reor_col, 0) or 0)
+            return orig / reor if reor and reor > 0 else 1.0
+        except Exception:
+            return 1.0
+
+    ratio_fw = [get_ratio(fw_map.get(p, {})) for p in prog]
+    ratio_nofw = [get_ratio(nofw_map.get(p, {})) for p in prog]
+
+    x = range(len(prog))
+    width = 0.4
+    fig, ax = plt.subplots(figsize=(max(16, len(prog) * 3.0), 8), dpi=150)
+    b1 = ax.bar([i - width/2 for i in x], pct_fw, width, label="Pct Improvement (fw)", color=COLOR_FW_ORIG)
+    b2 = ax.bar([i + width/2 for i in x], pct_nofw, width, label="Pct Improvement (no-fw)", color=COLOR_NOFW_ORIG)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
     ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=8)
+    ax.set_xticklabels([p.replace("_", "\n") for p in prog], rotation=0, ha="center", fontsize=10)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2, frameon=False, fontsize=10)
     ax.grid(axis="y", alpha=0.25)
-    _ensure_top_padding(ax, [bars1, bars2], pad=0.12)
-    annotate_float_bars(ax, bars1, offset_y=2, dx=-0.02, precision=3)
-    annotate_float_bars(ax, bars2, offset_y=2, dx=0.02, precision=3)
-    fig.tight_layout()
-    fig.subplots_adjust(bottom=0.30)
-    fig.savefig(outpath, transparent=True, bbox_inches="tight")
-    plt.close(fig)
 
+    _ensure_top_padding(ax, [b1, b2], pad=0.14)
 
-def plot_pct_cpi_and_speedup(df_src: pd.DataFrame, outpath: Path) -> None:
-    programs = df_src["program"].astype(str)
-    label_names = [p.replace("_", "\n") for p in programs]
-    comp = _compute_pct_and_speedup(df_src["orig_cpi"], df_src["reor_cpi"])
-
-    x = range(len(programs))
-    width = 0.6
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 4.5), dpi=150)
-    bars = ax.bar(x, comp["pct_improvement"], width, color=COLOR_ACCENT)
-    ax.set_ylabel("% CPI Improvement")
-    ax.set_title("Percent CPI Improvement (annotated ratio)")
-    ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.grid(axis="y", alpha=0.25)
-    _ensure_top_padding(ax, bars, pad=0.14)
-    for i, b in enumerate(bars):
-        pv = comp.iloc[i]["pct_improvement"]
-        sv = comp.iloc[i]["speedup"]
-        txt = f"{pv:.1f}%\n({sv:.2f}x)"
+    for i, b in enumerate(b1):
+        txt = f"{pct_fw[i]:.1f}%\n({ratio_fw[i]:.2f}x)"
         ax.annotate(txt, xy=(b.get_x() + b.get_width() / 2, b.get_height()),
                     xytext=(0, 4), textcoords="offset points", ha="center", va="bottom",
-                    fontsize=6)
-    fig.tight_layout()
-    fig.subplots_adjust(bottom=0.30)
-    fig.savefig(outpath, transparent=True, bbox_inches="tight")
-    plt.close(fig)
-
-
-def plot_pct_stalls_and_speedup(df_src: pd.DataFrame, outpath: Path) -> None:
-    programs = df_src["program"].astype(str)
-    label_names = [p.replace("_", "\n") for p in programs]
-    comp = _compute_pct_and_speedup(df_src["orig_stalls"], df_src["reor_stalls"])
-
-    x = range(len(programs))
-    width = 0.6
-    fig, ax = plt.subplots(figsize=(max(6, len(programs) * 0.9), 4.5), dpi=150)
-    bars = ax.bar(x, comp["pct_improvement"], width, color=COLOR_ACCENT)
-    ax.set_ylabel("% Stall Improvement")
-    ax.set_title("Percent Stall Improvement (annotated ratio)")
-    ax.set_xticks(list(x))
-    ax.set_xticklabels(label_names, rotation=0, ha="center", fontsize=8)
-    ax.grid(axis="y", alpha=0.25)
-    _ensure_top_padding(ax, bars, pad=0.14)
-    for i, b in enumerate(bars):
-        pv = comp.iloc[i]["pct_improvement"]
-        sv = comp.iloc[i]["speedup"]
-        txt = f"{pv:.1f}%\n({sv:.2f}x)"
+                    fontsize=10)
+    for i, b in enumerate(b2):
+        txt = f"{pct_nofw[i]:.1f}%\n({ratio_nofw[i]:.2f}x)"
         ax.annotate(txt, xy=(b.get_x() + b.get_width() / 2, b.get_height()),
                     xytext=(0, 4), textcoords="offset points", ha="center", va="bottom",
-                    fontsize=6)
+                    fontsize=10)
+
     fig.tight_layout()
-    fig.subplots_adjust(bottom=0.30)
+    fig.subplots_adjust(bottom=0.45)
     fig.savefig(outpath, transparent=True, bbox_inches="tight")
     plt.close(fig)
 
 def main(folder: Path) -> int:
-    results_dir = folder / "results"
-    csv_path = results_dir / "analysis.csv"
-    if not csv_path.exists():
-        print(f"analysis.csv not found at: {csv_path}")
-        return 2
+    # folder may be a Path or None; default to current working dir when None
+    folder = folder or Path.cwd()
+    results_dir = Path(folder) / "results"
 
-    df = read_analysis_csv(csv_path)
-    graphs = ensure_graphs_dir(results_dir)
+    if not results_dir.exists():
+        print(f"Results directory not found: {results_dir}")
+        return 1
 
-    # Primary graphs
-    plot_cycles(df, graphs / "cycles_comparison.png")
-    plot_cpi(df, graphs / "cpi_comparison.png")
-    plot_stalls(df, graphs / "stalls_comparison.png")
-    print(f"Saved cycles/cpi/stalls graphs to: {graphs}")
+    graphs_dir = ensure_graphs_dir(results_dir)
 
-    # Percent cycle improvement + annotated speedup
-    plot_pct_cycles_and_speedup(df, graphs / "pct_cycles_improvement.png")
-    print(f"Saved percent cycle improvement graph to: {graphs / 'pct_cycles_improvement.png'}")
+    csv_fw = results_dir / "analysis.csv"
+    csv_no_fw = results_dir / "analysis_no_fw.csv"
 
-    # Optional: stall rate comparison if available
-    if "orig_stall_rate" in df.columns and "reor_stall_rate" in df.columns:
-        plot_stall_rate(df, graphs / "stall_rate_comparison.png")
-        print(f"Saved stall rate comparison to: {graphs / 'stall_rate_comparison.png'}")
-    # Percent CPI improvement
-    plot_pct_cpi_and_speedup(df, graphs / "pct_cpi_improvement.png")
-    print(f"Saved percent CPI improvement graph to: {graphs / 'pct_cpi_improvement.png'}")
+    # Helper to generate the common suite of graphs for a dataframe and suffix
+    def _gen_all(df: pd.DataFrame, suffix: str = ""):
+        suf = f"{suffix}" if suffix else ""
+        try:
+            plot_stalls(df, graphs_dir / f"stall_count_comparison{suf}.png")
+            plot_stall_rate(df, graphs_dir / f"stall_rate_comparison{suf}.png")
+            plot_pct_stalls_and_speedup(df, graphs_dir / f"percent_stall_improvement{suf}.png")
+            
+            plot_cycles(df, graphs_dir / f"cycles_comparison{suf}.png")
+            plot_pct_cycles_and_speedup(df, graphs_dir / f"percent_cycle_improvement{suf}.png")
+            
+            plot_cpi(df, graphs_dir / f"cpi_comparison{suf}.png")
+            plot_pct_cpi_and_speedup(df, graphs_dir / f"percent_cpi_improvement{suf}.png")
+        except Exception as e:
+            print(f"Error generating individual graph: {e}")
 
-    # Percent Stall improvement
-    plot_pct_stalls_and_speedup(df, graphs / "pct_stalls_improvement.png")
-    print(f"Saved percent Stall improvement graph to: {graphs / 'pct_stalls_improvement.png'}")
+    # If both forwarding and no-forwarding analyses exist, produce combined
+    # per-program graphs that show forwarding and no-forwarding side-by-side.
+    if csv_fw.exists() and csv_no_fw.exists():
+        print(f"Reading {csv_fw} and {csv_no_fw}")
+        df_fw = read_analysis_csv(csv_fw)
+        df_nofw = read_analysis_csv(csv_no_fw)
 
-    return 0
+        plot_combined_stalls(df_fw, df_nofw, graphs_dir / "stall_count_comparison.png")
+        plot_combined_stall_rate(df_fw, df_nofw, graphs_dir / "stall_rate_comparison.png")
+        plot_combined_pct_metric(df_fw, df_nofw, "orig_stalls", "reor_stalls", "pct_stall_improvement",
+                                 "Percent Stall Improvement (annotated ratio)", "% Stall Improvement",
+                                 graphs_dir / "percent_stall_improvement.png")
+        
+        plot_combined_cycles(df_fw, df_nofw, graphs_dir / "cycles_comparison.png")
+        plot_combined_pct_metric(df_fw, df_nofw, "orig_cycles", "reor_cycles", "pct_cycle_improvement",
+                                 "Percent cycle Improvement (annotated speedup)", "% Cycle Improvement",
+                                 graphs_dir / "percent_cycle_improvement.png")
+        
+        plot_combined_cpi(df_fw, df_nofw, graphs_dir / "cpi_comparison.png")
+        plot_combined_pct_metric(df_fw, df_nofw, "orig_cpi", "reor_cpi", "pct_cpi_improvement",
+                                 "Percent CPI Improvement (annotated ratio)", "% CPI Improvement",
+                                 graphs_dir / "percent_cpi_improvement.png")
+
+        print(f"Wrote combined graphs to: {graphs_dir}")
+        return 0
+
+    # Fallback: if only one dataset exists, generate the existing suite.
+    if csv_fw.exists():
+        print(f"Reading {csv_fw}")
+        df_fw = read_analysis_csv(csv_fw)
+        _gen_all(df_fw, suffix="")
+        print(f"Wrote graphs to: {graphs_dir}")
+        return 0
+
+    if csv_no_fw.exists():
+        print(f"Reading {csv_no_fw}")
+        df_nofw = read_analysis_csv(csv_no_fw)
+        _gen_all(df_nofw, suffix="_no_fw")
+        print(f"Wrote no-forwarding graphs to: {graphs_dir}")
+        return 0
+
+    print(f"No analysis CSVs found in {results_dir}; expected analysis.csv or analysis_no_fw.csv")
+    return 2
 
 
 if __name__ == "__main__":

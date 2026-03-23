@@ -46,11 +46,12 @@ if not RIPES_EXE:
 # You can specify the processor model via RIPES_PROC in your .env file.
 # By default, "RV32_5S" (with forwarding) is used. Use "RV32_5S_NO_FW" for no forwarding.
 RIPES_PROC = os.getenv("RIPES_PROC", "RV32_5S")
+# No-forwarding processor identifier (override via .env if desired)
+RIPES_PROC_NOFW = os.getenv("RIPES_PROC_NOFW", "RV32_5S_NO_FW")
 
 RIPES_BASE_ARGS = [
     "--mode", "cli",
     "-t", "asm",
-    "--proc", RIPES_PROC,
     "--json",
     "--all",
 ]
@@ -63,7 +64,7 @@ ROOT = Path(__file__).resolve().parent
 
 # ── Ripes runner ──────────────────────────────────────────────────────────────
 
-def run_ripes(asm_file: Path, out_json: Path) -> bool:
+def run_ripes(asm_file: Path, out_json: Path, proc: str) -> bool:
     """Invoke Ripes CLI on *asm_file* and save the raw JSON to *out_json*.
 
     Returns True on success, False on failure.
@@ -71,7 +72,7 @@ def run_ripes(asm_file: Path, out_json: Path) -> bool:
     Note: Ripes CLI uses ``--src`` to specify the assembly source file.
     Adjust the flag to ``-f`` or ``--file`` if your build requires it.
     """
-    cmd = [RIPES_EXE] + RIPES_BASE_ARGS + ["--src", str(asm_file)]
+    cmd = [RIPES_EXE] + RIPES_BASE_ARGS + ["--proc", proc, "--src", str(asm_file)]
 
     try:
         result = subprocess.run(
@@ -209,10 +210,19 @@ def main(tests_dir: Path = None, reordered_dir: Path = None,
         print(f"  Program : {stem}")
 
         # --- original ---
+        # forward-enabled (default) output keeps the original filenames for
+        # backwards compatibility (e.g. <stem>_original.json).
         orig_json = results_dir / f"{stem}_original.json"
-        print(f"  [1/2] Running original  …", end=" ", flush=True)
-        ok_orig = run_ripes(src, orig_json)
-        print("done" if ok_orig else "FAILED")
+        print(f"  [1/4] Running original (with forwarding)  …", end=" ", flush=True)
+        ok_orig_fw = run_ripes(src, orig_json, RIPES_PROC)
+        print("done" if ok_orig_fw else "FAILED")
+
+        # no-forwarding output gets a distinct suffix so it can be analysed
+        # separately (e.g. <stem>_original_no_fw.json).
+        orig_json_nofw = results_dir / f"{stem}_original_no_fw.json"
+        print(f"  [2/4] Running original (no forwarding)   …", end=" ", flush=True)
+        ok_orig_nofw = run_ripes(src, orig_json_nofw, RIPES_PROC_NOFW)
+        print("done" if ok_orig_nofw else "FAILED")
 
         # --- reordered ---
         reordered_src  = reordered_dir / f"{stem}_reordered.s"
@@ -223,11 +233,19 @@ def main(tests_dir: Path = None, reordered_dir: Path = None,
             print("         Run  python reorder_all.py  first.")
             continue
 
-        print(f"  [2/2] Running reordered …", end=" ", flush=True)
-        ok_reordered = run_ripes(reordered_src, reordered_json)
-        print("done" if ok_reordered else "FAILED")
+        print(f"  [3/4] Running reordered (with forwarding)  …", end=" ", flush=True)
+        ok_reordered_fw = run_ripes(reordered_src, reordered_json, RIPES_PROC)
+        print("done" if ok_reordered_fw else "FAILED")
 
-        if not (ok_orig and ok_reordered):
+        reordered_json_nofw = results_dir / f"{stem}_reordered_no_fw.json"
+        print(f"  [4/4] Running reordered (no forwarding)   …", end=" ", flush=True)
+        ok_reordered_nofw = run_ripes(reordered_src, reordered_json_nofw, RIPES_PROC_NOFW)
+        print("done" if ok_reordered_nofw else "FAILED")
+
+        # For the remainder of the script keep the original behaviour and
+        # proceed if the forward-enabled runs succeeded. The no-forwarding
+        # results are still written above and will be analysed separately.
+        if not (ok_orig_fw and ok_reordered_fw):
             print(f"  [skip] Skipping {stem} — simulation error(s) above.")
             continue
 

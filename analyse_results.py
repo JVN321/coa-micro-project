@@ -94,12 +94,16 @@ def extract_metrics(data: dict) -> dict:
 
 # ── Pairing helper ────────────────────────────────────────────────────────────
 
-def collect_pairs(results_dir: Path) -> list[dict]:
-    """Return one record per program containing both original and reordered metrics."""
-    originals = {p.stem.removesuffix("_original"): p
-                 for p in results_dir.glob("*_original.json")}
-    reordered = {p.stem.removesuffix("_reordered"): p
-                 for p in results_dir.glob("*_reordered.json")}
+def collect_pairs(results_dir: Path, suffix: str = "") -> list[dict]:
+    """Return one record per program containing both original and reordered metrics.
+
+    *suffix* may be used to select processor-specific JSON filenames. For
+    example, pass "_no_fw" to find files named like <stem>_original_no_fw.json.
+    """
+    originals = {p.stem.removesuffix(f"_original{suffix}"): p
+                 for p in results_dir.glob(f"*_original{suffix}.json")}
+    reordered = {p.stem.removesuffix(f"_reordered{suffix}"): p
+                 for p in results_dir.glob(f"*_reordered{suffix}.json")}
 
     programs = sorted(originals.keys() & reordered.keys())
 
@@ -275,21 +279,40 @@ def main(results_dir: Path = None) -> None:
     results_dir = results_dir or (ROOT / "results")
     csv_path    = results_dir / "analysis.csv"
 
+    # CSV for no-forwarding results
+    csv_path_no_fw = results_dir / "analysis_no_fw.csv"
+
     if not results_dir.exists():
         print("[error] results/ directory not found.")
         print("        Run  python run_benchmarks.py  first to generate JSON outputs.")
         return
 
     json_count = len(list(results_dir.glob("*.json")))
+
     print(f"Found {json_count} JSON file(s) in {results_dir}/")
 
-    pairs = collect_pairs(results_dir)
-    if not pairs:
-        print("[error] No matching original/reordered JSON pairs found.")
+    # Produce analysis for the forwarding (default) results and write CSV.
+    pairs_fw = collect_pairs(results_dir, suffix="")
+    # Produce analysis for the no-forwarding results and write separate CSV.
+    pairs_nofw = collect_pairs(results_dir, suffix="_no_fw")
+
+    if not pairs_fw and not pairs_nofw:
+        print("[error] No matching original/reordered JSON pairs found (forwarding or no-forwarding).")
         return
 
-    print_analysis(pairs)
-    write_csv(pairs, results_dir, csv_path)
+    if pairs_fw:
+        print("\n*** Forwarding (with forwarding enabled) Results ***")
+        print_analysis(pairs_fw)
+        write_csv(pairs_fw, results_dir, csv_path)
+    else:
+        print("\n[info] No forwarding results found; skipping analysis for forwarding dataset.")
+
+    if pairs_nofw:
+        print("\n*** No-Forwarding Results (no forwarding) ***")
+        print_analysis(pairs_nofw)
+        write_csv(pairs_nofw, results_dir, csv_path_no_fw)
+    else:
+        print("\n[info] No no-forwarding results found; skipping analysis for no-forwarding dataset.")
 
 
 if __name__ == "__main__":
