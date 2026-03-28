@@ -16,7 +16,8 @@ A conservative optimization toolchain for textual RISC-V assembly targeting a cl
 ├── run.py                    # Top-level runner: reorder → benchmark → analyse
 ├── compile_c_for_ripes.py    # Compile C programs and convert them for Ripes
 ├── convert_for_ripes.py      # Convert a GCC .s file to a Ripes-compatible .s file
-├── build_graphs.py      # Parse CSV file and generates graphs
+├── build_graphs.py           # Parse CSV file and generates graphs
+├── verify_results.py         # Verify semantic correctness by comparing JSON register states
 ├── tests/                    # Default original assembly test programs
 ├── reordered_tests/          # Default output from reorder_all.py
 ├── results/                  # Default JSON outputs from Ripes + analysis.csv
@@ -185,8 +186,25 @@ No Ripes installation required — operates entirely on JSON files already produ
 
 - Reads every `*_original.json` / `*_reordered.json` pair from the results directory.
 - Computes performance metrics: cycles, instructions retired, IPC, CPI, and pipeline stall counts.
-- Prints a formatted analysis table to the terminal.
-- Writes/overwrites `<results-dir>/analysis.csv`.
+- Parses the performance metrics in JSON to compute cycle improvements.
+- Writes `<results-dir>/analysis.csv`.
+
+#### 6. Verify semantic correctness
+
+```bash
+# Default (scans all known results directories: results/, test1/results/, test2/results/)
+python verify_results.py
+
+# Custom
+python verify_results.py --results-dir "my_folder/results"
+```
+
+No Ripes installation required — operates directly on JSON files output by `run_benchmarks.py`.
+
+- Reads every `*_original.json` / `*_reordered.json` pair from the results directory.
+- Extracts final register states.
+- Ensures the final output state matches precisely before and after optimization.
+- Generates a pass/fail report, printing discrepancies if any.
 
 ---
 

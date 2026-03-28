@@ -24,7 +24,7 @@ def main() -> None:
         extra = []
         print("Using default project directories.")
 
-    scripts = ["reorder_all.py", "run_benchmarks.py", "analyse_results.py"]
+    scripts = ["reorder_all.py", "run_benchmarks.py", "analyse_results.py", "verify_results.py"]
     for script in scripts:
         print(f"\n--- Running {script} ---")
         subprocess.run([sys.executable, script] + extra, check=True)
