@@ -1,18 +1,37 @@
 ---
 id: 1237266e-aaea-4bba-9128-99db7a69cad4
 ---
-%%{init: {"flowchart": {"nodeSpacing": 20, "rankSpacing": 20, "curve": "linear"}}}%%
+%%{init: {"flowchart": {"nodeSpacing": 40, "rankSpacing": 40, "curve": "basis", "defaultRenderer": "dagre"}}}%%
 %% Pipeline Flowchart for RISC-V assembly optimizer
 flowchart TD
-  A["<b>C Program (.c)</b><br/>Source"] --> B["<b>compile_c_for_ripes.py</b><br/>Compile + convert"]
-  B --> C["<b>convert_for_ripes.py</b><br/>Ripes-ready assembly"]
-  C --> D["<b>Test Scripts (.s)</b><br/>Input scripts"]
-  D --> E["<b>reorder_all.py</b><br/>Uses minimal reordering"]
-  E --> F["<b>Reordered Assembly Scripts (.s)</b><br/>Output scripts"]
-  F --> G["<b>run_benchmarks.py</b><br/>Ripes -> JSON"]
-  G --> H["<b>analyse_results.py</b><br/>JSON -> CSV"]
-  H --> I["<b>build_graphs.py</b><br/>CSV -> graphs"]
+  classDef source fill:#f9f9f9,stroke:#666666,stroke-width:1px,rx:5,ry:5,color:#333333;
+  classDef script fill:#ffffff,stroke:#0055a4,stroke-width:2px,rx:5,ry:5,color:#000000;
+  classDef data fill:#ebf5eb,stroke:#2a7b45,stroke-width:1px,rx:5,ry:5,color:#000000;
 
-  classDef step fill:#ffffff,stroke:#000000,stroke-width:2px,color:#000000;
-  class A,B,C,D,E,F,G,H,I step
-  linkStyle default stroke:#000000,stroke-width:2px;
+  subgraph Compilation["Compilation Phase"]
+    direction TB
+    A["<b>C Program (.c)</b><br/>Source code"]:::source --> B["<b>compile_c_for_ripes.py</b><br/>Compile to basic assembly"]:::script
+    B --> C["<b>convert_for_ripes.py</b><br/>Format into Ripes-ready assembly"]:::script
+    C --> D["<b>Test Scripts (.s)</b><br/>Original unoptimized baseline"]:::data
+  end
+
+  subgraph Optimization["Optimization Phase"]
+    direction TB
+    D --> E["<b>reorder_all.py</b><br/>Applies minimal reordering algorithm"]:::script
+    E --> F["<b>Reordered Scripts (.s)</b><br/>Optimized assembly"]:::data
+  end
+
+  subgraph Execution["Execution Phase"]
+    direction TB
+    F --> G["<b>run_benchmarks.py</b><br/>Execute natively in Ripes Simulator"]:::script
+    G --> H["<b>Simulation Output (.json)</b><br/>Cycle counts, stalls, CPU state"]:::data
+  end
+
+  subgraph Assessment["Assessment & Validation Phase"]
+    direction TB
+    H --> V["<b>verify_results.py</b><br/>Validate semantic correctness"]:::script
+    V --> I["<b>analyse_results.py</b><br/>Extract key metrics"]:::script
+    I --> J["<b>analysis.csv</b><br/>Raw aggregate metrics"]:::data
+    J --> L["<b>generate_summary.py</b><br/>Compile final statistics pipeline"]:::script
+    L --> K["<b>build_graphs.py</b><br/>Produce visual charts"]:::script
+  end
